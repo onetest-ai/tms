@@ -59,9 +59,11 @@ esac
 if [ "$OPT" = "Passed" ] && [ -z "$EVIDENCE" ] && [ "$FORCE" -eq 0 ]; then
   echo "Refusing PASS without --evidence (use --force to override)." >&2; exit 3
 fi
-declare -A FRLABEL=( [bug_in_app]=fail:bug-in-app [test_data_issue]=fail:test-data
-  [environment_issue]=fail:environment [test_needs_update]=fail:test-needs-update
-  [blocked_by_other]=fail:blocked-by-other [other]=fail:other )
+fr_label(){ case "$1" in
+  bug_in_app) echo "fail:bug-in-app";; test_data_issue) echo "fail:test-data";;
+  environment_issue) echo "fail:environment";; test_needs_update) echo "fail:test-needs-update";;
+  blocked_by_other) echo "fail:blocked-by-other";; other) echo "fail:other";; *) echo "";;
+esac; }
 
 # ---- project field/option ids ---------------------------------------------
 [ -n "$PN" ] || PN="$(gh project list --owner "$ORG" --format json -q '.projects[] | select(.title=="QA Runs") | .number' | head -1)"
@@ -87,8 +89,8 @@ gh issue edit "$ENUM" --repo "$EREPO" \
   --remove-label result:not-run --remove-label result:passed --remove-label result:failed \
   --remove-label result:blocked --remove-label result:skipped >/dev/null 2>&1 || true
 gh issue edit "$ENUM" --repo "$EREPO" --add-label "$LABEL" >/dev/null
-if [ "$OPT" = "Failed" ] && [ -n "${FRLABEL[$FREASON]:-}" ]; then
-  gh issue edit "$ENUM" --repo "$EREPO" --add-label "${FRLABEL[$FREASON]}" >/dev/null || true
+if [ "$OPT" = "Failed" ] && [ -n "$(fr_label "$FREASON")" ]; then
+  gh issue edit "$ENUM" --repo "$EREPO" --add-label "$(fr_label "$FREASON")" >/dev/null || true
 fi
 [ -n "$DEFECT" ] && gh issue edit "$ENUM" --repo "$EREPO" --add-label defect-linked >/dev/null || true
 
