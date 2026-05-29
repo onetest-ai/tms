@@ -1,18 +1,17 @@
 ---
-id: TMS-0001                       # <source_key>-<seq>; allocated by allocate-id, never reused
+id: TMS-0001
 title: Login with valid credentials
-priority: critical                 # critical | high | medium | low
-type: functional                   # functional | regression | smoke | integration | exploratory
-module: authentication             # feature area (OneTest "component")
-status: ready                      # draft | ready | deprecated (config-driven)
-execution_type: automated          # manual | automated (drives automation coverage)
-size: M                            # S | M | L — agent-execution cost (test-sizer); optional
-targets: [onetest-ai/app-web]      # repo(s) under test; execution Issues are created there
-automation_test_id:                # CI correlation key(s) — file:Class.method, one per line
+priority: critical
+type: functional
+module: authentication
+status: ready
+execution_type: automated
+size: M
+targets: [onetest-ai/app-web]
+automation_test_id:
   - tests/e2e/login.spec.ts:Login.valid
-requirements: [REQ-001]            # traceability
+requirements: [REQ-001]
 tags: [smoke, login, happy-path]
-# custom_fields: { jira_ticket: PROJ-99 }
 ---
 
 # TMS-0001: Login with Valid Credentials
