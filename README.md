@@ -22,6 +22,23 @@ reports. Test cases live in [`tests/`](tests/); config in [`.onetest/`](.onetest
   [`design/github-native/`](design/github-native/) and [`design/functionalities`](design/functionalities/) /
   [`design/data-model`](design/data-model/).
 
+## Requirements
+
+The MCP server is Node, but its engine shells out to standard CLI tools, so the machine that runs
+it (your laptop, or a CI runner) needs these on `PATH`:
+
+| Tool | Why | Check |
+| --- | --- | --- |
+| **Node ≥ 20** | runs the MCP server (`npx -y @onetest/tms`) | `node -v` |
+| **`gh`** (GitHub CLI), **authenticated** | all GitHub reads/writes (Issues, Projects, repos) | `gh auth status` |
+| **`git`** | clones/pulls the target repo, commits reports | `git --version` |
+| **`bash`** | runs the engine scripts | `bash --version` |
+| **`python3`** | front-matter parsing, OQL, coverage, report rendering | `python3 --version` |
+
+`gh` needs `repo` + `read:org` scopes (and `admin:org` / `project` for one-time org setup). On
+macOS/Linux `bash` + `python3` are usually present; otherwise install them (e.g. Homebrew). Run
+`onetest-tms doctor` (or `bash onetest-tms/scripts/doctor.sh`) to check everything at once.
+
 ## Scope
 
 In scope: **test case management, test execution management, automated test results, correlations

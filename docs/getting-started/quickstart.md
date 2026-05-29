@@ -8,11 +8,25 @@ you just describe what you want in chat.
 
 ## Prerequisites
 
+- **Command-line tools on your `PATH`.** The MCP server is Node, but it shells out to standard
+  tools, so you need all of these installed:
+
+  | Tool | Why | Check |
+  | --- | --- | --- |
+  | **Node ≥ 20** | runs the server via `npx` | `node -v` |
+  | **`gh`** (GitHub CLI) | every GitHub read/write | `gh --version` |
+  | **`git`** | clone/pull the repo, commit reports | `git --version` |
+  | **`bash`** + **`python3`** | the engine scripts (search, coverage, reports) | `python3 --version` |
+
+  On macOS/Linux `git`/`bash`/`python3` are usually already there; install any that are missing
+  (e.g. Homebrew). To check everything at once, run `npx -y @onetest/tms doctor --repo onetest-ai/tm-shop`.
+
 - **A provisioned TM repo.** You need access to a product test-management repo (for example
   `onetest-ai/tm-shop`) that already contains `.onetest/config.yml` and a `tests/` tree. This guide
   uses the source key `SHOP`, so cases look like `SHOP-0001` and runs like
   `RUN-SHOP-2026-05-29-001`.
-- **`gh` authenticated** with access to that repo and to the org **QA Runs** Project:
+- **`gh` authenticated** with access to that repo and to the org **QA Runs** Project (scopes
+  `repo` + `read:org`):
 
   ```bash
   gh auth status
