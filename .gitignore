@@ -1,0 +1,9 @@
+# Local agent / harness tooling — not part of the deliverable
+.claude/
+.agents/
+.mcp.json
+AGENTS.md
+
+# OS / editor cruft
+.DS_Store
+*.swp
