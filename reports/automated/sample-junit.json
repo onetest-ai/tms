@@ -1,0 +1,24 @@
+{
+  "launch": {
+    "total": 2,
+    "passed": 1,
+    "failed": 1,
+    "skipped": 0
+  },
+  "items": [
+    {
+      "code_ref": "tests/e2e/login.spec.ts:Login.valid",
+      "name": "valid",
+      "status": "passed",
+      "duration_ms": 1200,
+      "failure_message": ""
+    },
+    {
+      "code_ref": "tests/e2e/cart.spec.ts:Cart.checkout",
+      "name": "checkout",
+      "status": "failed",
+      "duration_ms": 800,
+      "failure_message": "expected 200 AssertionError"
+    }
+  ]
+}

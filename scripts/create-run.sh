@@ -25,13 +25,14 @@ HERE="$(cd "$(dirname "$0")" && pwd)"
 TC="$HERE/_tc.py"
 
 # ---- args -----------------------------------------------------------------
-NAME=""; FOLDER=""; GLOB=""; TAG=""; ENVIRONMENT="staging"; TARGET_OVERRIDE=""
+NAME=""; FOLDER=""; GLOB=""; TAG=""; OQL=""; ENVIRONMENT="staging"; TARGET_OVERRIDE=""
 ASSIGNEES=""; ORG="onetest-ai"; PROJECT_NUMBER=""; DRY=0; declare -a FILES=()
 while [ $# -gt 0 ]; do case "$1" in
   --name) NAME="$2"; shift 2;;
   --folder) FOLDER="$2"; shift 2;;
   --glob) GLOB="$2"; shift 2;;
   --tag) TAG="$2"; shift 2;;
+  --oql) OQL="$2"; shift 2;;
   --env) ENVIRONMENT="$2"; shift 2;;
   --target) TARGET_OVERRIDE="$2"; shift 2;;
   --assignees) ASSIGNEES="$2"; shift 2;;
@@ -51,7 +52,11 @@ declare -a CAND=()
 [ ${#FILES[@]} -gt 0 ] && CAND+=("${FILES[@]}")
 [ -n "$FOLDER" ] && while IFS= read -r f; do CAND+=("$f"); done < <(find "$FOLDER" -type f -name '*.md' ! -name 'README.md' ! -name '_suite.yml' | sort)
 [ -n "$GLOB" ] && while IFS= read -r f; do CAND+=("$f"); done < <(bash -c "shopt -s globstar nullglob; for x in $GLOB; do echo \$x; done" | sort)
-[ ${#CAND[@]} -gt 0 ] || { echo "no scope given — use --folder, --glob, or file args" >&2; exit 2; }
+if [ -n "$OQL" ]; then
+  [ -f index.json ] || python3 "$HERE/_index.py" --dir tests --out index.json
+  while IFS= read -r f; do CAND+=("$f"); done < <(python3 "$HERE/_oql.py" --query "$OQL" --index index.json)
+fi
+[ ${#CAND[@]} -gt 0 ] || { echo "no scope given — use --folder, --glob, --oql, or file args" >&2; exit 2; }
 
 declare -a SELECTED=()
 for f in "${CAND[@]}"; do
