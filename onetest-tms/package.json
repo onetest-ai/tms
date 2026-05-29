@@ -1,12 +1,18 @@
 {
   "name": "onetest-tms",
-  "version": "0.1.0",
-  "description": "OneTest GitHub-native TMS — MCP server (stdio) + gh-CLI engine (scripts/).",
+  "version": "0.2.0",
+  "description": "OneTest GitHub-native TMS — MCP server (stdio) + gh-CLI engine that runs test management on GitHub Issues, Projects, and repo files.",
+  "keywords": ["mcp", "model-context-protocol", "test-management", "qa", "testing", "github", "onetest", "tms"],
+  "homepage": "https://github.com/onetest-ai/tms/tree/main/onetest-tms",
+  "repository": { "type": "git", "url": "git+https://github.com/onetest-ai/tms.git", "directory": "onetest-tms" },
+  "bugs": { "url": "https://github.com/onetest-ai/tms/issues" },
+  "license": "MIT",
   "type": "module",
   "bin": { "onetest-tms": "server.js" },
-  "files": ["server.js", "scripts"],
+  "files": ["server.js", "scripts", "README.md"],
   "scripts": { "test": "node test/client.mjs" },
   "engines": { "node": ">=20" },
+  "publishConfig": { "access": "public" },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",
     "zod": "^3.23.8"

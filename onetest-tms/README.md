@@ -11,24 +11,38 @@ Thin adapter — all logic lives in `scripts/` (and their Python helpers). Imple
 `record_result`, `complete_run`, `add_to_run`, `rerun_execution`, `create_defect`,
 `ingest_results`, `correlate_results`.
 
-## Run / test
+## Requirements
 
-```bash
-cd mcp && npm install
-npm test            # spawns the server and exercises the read-only tools
-```
+The server is Node, but the engine shells out to standard tools. On the machine that runs it:
+- **Node ≥ 20**
+- **`gh`** (GitHub CLI), authenticated (`gh auth login`) with `repo` + `read:org` (and `admin:org`
+  / `project` for setup tasks)
+- **`git`**, **`bash`**, and **`python3`** on `PATH`
 
-Requires `gh` authenticated (the tools shell out to `gh`) and Node ≥ 20.
-`OT_REPO_ROOT` overrides the repo root (defaults to the parent of `mcp/`).
-
-## Configure in a client
+## Install (in a client)
 
 Claude Code (`.mcp.json`) / VS Code Copilot (`.vscode/mcp.json`):
 ```jsonc
 { "mcpServers": { "onetest-tms": {
-  "type": "stdio",
-  "command": "node",
-  "args": ["/absolute/path/to/tms/onetest-tms/server.js"]
+  "type": "stdio", "command": "npx", "args": ["-y", "onetest-tms"]
 } } }
 ```
-Once published to npm, this becomes `"command": "npx", "args": ["-y", "onetest-tms"]`.
+For local development, point at the checkout instead:
+`{ "command": "node", "args": ["/absolute/path/to/tms/onetest-tms/server.js"] }`.
+`OT_REPO_ROOT` sets the default working repo when a tool call omits `repo`.
+
+## Develop / test
+
+```bash
+cd onetest-tms && npm install
+npm test            # spawns the server and exercises the read-only tools
+```
+
+## Publish
+
+```bash
+npm login           # once
+npm publish         # publishes onetest-tms (public)
+```
+Or cut a GitHub Release to publish via the `publish-onetest-tms` workflow (needs the `NPM_TOKEN`
+repo secret).
