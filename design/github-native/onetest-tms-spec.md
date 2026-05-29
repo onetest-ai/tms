@@ -3,7 +3,7 @@
 The buildable contract for the npx package that bridges the [web-qa agent family](05-test-run-ux.md)
 to GitHub. One package, two entry points, **logic in code**:
 
-- **stdio MCP server** — `npx -y onetest-tms` — tools for Claude Code / Copilot / VS Code agents.
+- **stdio MCP server** — `npx -y @onetest/tms` — tools for Claude Code / Copilot / VS Code agents.
 - **CLI** — `onetest-tms <command>` — same code, for GitHub Actions / autonomous runs.
 
 This spec defines tools, input/output schemas, and the GitHub API calls each makes. It implements
@@ -29,7 +29,7 @@ Node ≥ 20. Config via env (or `.onetest/config.yml` in the TM repo, overridabl
 MCP config (`.mcp.json` / `.vscode/mcp.json`):
 ```jsonc
 { "mcpServers": { "onetest-tms": {
-  "type": "stdio", "command": "npx", "args": ["-y", "onetest-tms"],
+  "type": "stdio", "command": "npx", "args": ["-y", "@onetest/tms"],
   "env": { "GITHUB_TOKEN": "${OT_GH_APP_TOKEN}", "OT_TM_REPO": "org/tm-login",
            "OT_ORG": "org", "OT_PROJECT": "12", "OT_SOURCE_KEY": "LOGIN" } } } }
 ```

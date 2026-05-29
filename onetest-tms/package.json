@@ -1,5 +1,5 @@
 {
-  "name": "onetest-tms",
+  "name": "@onetest/tms",
   "version": "0.2.0",
   "description": "OneTest GitHub-native TMS — MCP server (stdio) + gh-CLI engine that runs test management on GitHub Issues, Projects, and repo files.",
   "keywords": ["mcp", "model-context-protocol", "test-management", "qa", "testing", "github", "onetest", "tms"],

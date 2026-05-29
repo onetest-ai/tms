@@ -10,7 +10,7 @@
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { z } from "zod";
-import { execFile } from "node:child_process";
+import { execFile, execFileSync } from "node:child_process";
 import { readFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -21,6 +21,25 @@ const DIR = path.dirname(fileURLToPath(import.meta.url));      // the onetest-tm
 const SCRIPTS = path.join(DIR, "scripts");                     // engine ships inside the package
 const DEFAULT_CWD = process.env.OT_REPO_ROOT || path.resolve(DIR, ".."); // when no `repo` arg is given
 const WS = process.env.OT_WORKSPACE || path.join(os.homedir(), ".onetest-workspaces");
+
+// CLI face: `onetest-tms <command> [args]` runs the matching scripts/<command>.sh in the current
+// directory (for terminals and GitHub Actions). With no command, start the stdio MCP server.
+{
+  const argv = process.argv.slice(2);
+  if (argv.length > 0 && !argv[0].startsWith("-")) {
+    const script = path.join(SCRIPTS, `${argv[0]}.sh`);
+    if (!existsSync(script)) {
+      console.error(`onetest-tms: unknown command '${argv[0]}'`);
+      process.exit(2);
+    }
+    try {
+      execFileSync("bash", [script, ...argv.slice(1)], { stdio: "inherit", env: process.env });
+      process.exit(0);
+    } catch (e) {
+      process.exit(typeof e.status === "number" ? e.status : 1);
+    }
+  }
+}
 
 function execP(cmd, args, opts = {}) {
   return new Promise((res, rej) =>

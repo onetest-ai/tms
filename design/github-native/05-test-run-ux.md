@@ -122,7 +122,7 @@ Config (one file per host): `.mcp.json` (Claude Code) / `.vscode/mcp.json` (Copi
 ```jsonc
 { "mcpServers": {
     "onetest-tms": { "type": "stdio", "command": "npx",
-      "args": ["-y", "onetest-tms"],
+      "args": ["-y", "@onetest/tms"],
       "env": { "GITHUB_TOKEN": "${OT_GH_APP_TOKEN}", "OT_TM_REPO": "org/tm-login" } } } }
 ```
 

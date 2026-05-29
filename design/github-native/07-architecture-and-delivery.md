@@ -58,7 +58,7 @@ One MCP config in the QA engineer's environment (`.mcp.json` / `.vscode/mcp.json
 
 ```jsonc
 { "mcpServers": {
-  "onetest-tms": { "command": "npx", "args": ["-y", "onetest-tms"] },   // the TMS provider (local process)
+  "onetest-tms": { "command": "npx", "args": ["-y", "@onetest/tms"] },   // the TMS provider (local process)
   "playwright":  { "command": "npx", "args": ["@playwright/mcp@latest"] }   // execution
 } }
 ```
@@ -66,7 +66,7 @@ One MCP config in the QA engineer's environment (`.mcp.json` / `.vscode/mcp.json
 `onetest-tms` tools (`create_run`, `get_test_case`, `record_result`, …) and `playwright` to run.
 
 ### Delivery channels for the onetest-tms server
-- **Published (target):** `npx -y onetest-tms` — published to npm from the server repo via a
+- **Published (target):** `npx -y @onetest/tms` — published to npm from the server repo via a
   release Action. Zero clone; `npx` fetches the latest server; the `repo` arg pulls content.
 - **Interim (today):** `node <local-clone>/onetest-tms/server.js` — runs from a checkout. Same local-process
   model, just not yet published.

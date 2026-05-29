@@ -28,7 +28,7 @@ automated (CI/JUnit) results; or checking automation coverage.
 
 ## Prerequisites
 - The `onetest-tms` MCP server is configured (local stdio), e.g. `.mcp.json`:
-  `{ "onetest-tms": { "command": "npx", "args": ["-y", "onetest-tms"] } }`.
+  `{ "onetest-tms": { "command": "npx", "args": ["-y", "@onetest/tms"] } }`.
 - `gh` is authenticated with access to the target TM repo and the org Project.
 - Most tools take an optional **`repo`** (`OWNER/NAME`) — the TM repo to operate on. Omit it to use
   the server's default repo.

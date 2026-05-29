@@ -24,7 +24,7 @@ The server is Node, but the engine shells out to standard tools. On the machine 
 Claude Code (`.mcp.json`) / VS Code Copilot (`.vscode/mcp.json`):
 ```jsonc
 { "mcpServers": { "onetest-tms": {
-  "type": "stdio", "command": "npx", "args": ["-y", "onetest-tms"]
+  "type": "stdio", "command": "npx", "args": ["-y", "@onetest/tms"]
 } } }
 ```
 For local development, point at the checkout instead:
@@ -42,7 +42,7 @@ npm test            # spawns the server and exercises the read-only tools
 
 ```bash
 npm login           # once
-npm publish         # publishes onetest-tms (public)
+npm publish         # publishes @onetest/tms (public)
 ```
 Or cut a GitHub Release to publish via the `publish-onetest-tms` workflow (needs the `NPM_TOKEN`
 repo secret).

@@ -24,7 +24,7 @@ you just describe what you want in chat.
   ```jsonc
   {
     "mcpServers": {
-      "onetest-tms": { "command": "npx", "args": ["-y", "onetest-tms"] }
+      "onetest-tms": { "command": "npx", "args": ["-y", "@onetest/tms"] }
     }
   }
   ```
