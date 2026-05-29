@@ -52,8 +52,10 @@ docs/                     this documentation set
 
 ## Status of the stubs
 
-The `.github/workflows/*` are **placeholders** that document intent and stay green until the
-[`onetest-gh`](onetest-gh-mcp-spec.md) npx package ships; then each calls the real CLI.
+A reference **MCP server** now lives in [`mcp/`](../../mcp) — a thin stdio adapter exposing the
+[`scripts/`](../../scripts) as the 12 [`onetest-gh`](onetest-gh-mcp-spec.md) tools
+(`npm test` exercises it). The `.github/workflows/*` are **placeholders** that document intent and
+stay green until the scripts/MCP are wired into CI.
 
 Already applied to `onetest-ai`: the org **Issue Types** (Test Run, Test Execution, Defect,
 Exploratory Finding), the repo **labels**, and the org **Project** #2 "QA Runs"

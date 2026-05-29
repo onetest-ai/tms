@@ -1,0 +1,14 @@
+{
+  "name": "onetest-gh-mcp",
+  "version": "0.1.0",
+  "description": "OneTest GitHub-native TMS — MCP server (stdio) wrapping the gh-CLI scripts.",
+  "type": "module",
+  "bin": { "onetest-gh-mcp": "server.js" },
+  "files": ["server.js"],
+  "scripts": { "test": "node test/client.mjs" },
+  "engines": { "node": ">=20" },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "zod": "^3.23.8"
+  }
+}

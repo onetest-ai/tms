@@ -4,6 +4,9 @@
 .mcp.json
 AGENTS.md
 
+# Node
+node_modules/
+
 # OS / editor cruft
 .DS_Store
 *.swp

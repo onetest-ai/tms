@@ -33,6 +33,7 @@ event-triggered Actions. The catalog of these functions is in [functions.md](fun
   - [04 — Correlations & Reporting](04-correlations-and-reporting.md)
 - [05 — Test Run UX (agents + MCP)](05-test-run-ux.md) — how runs feel to use in Copilot/Claude/VS Code
 - [`onetest-gh` MCP tool spec](onetest-gh-mcp-spec.md) — the buildable contract (tool schemas + GitHub API mapping)
+- [Reference MCP server](../../mcp) + [gh-CLI scripts](../../scripts) — working implementation of the spec
 - [Parity with OneTest](parity-with-onetest.md) — capability-by-capability audit (TCM + Execution)
 - [Functions catalog](functions.md)
 - [Open decisions & trade-offs](#open-decisions--trade-offs)
