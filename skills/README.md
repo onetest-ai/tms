@@ -10,7 +10,7 @@ folder with a `SKILL.md` (YAML front-matter: `name`, `description`, …; Markdow
 > This is *consumer guidance* for the TMS — not a test executor. The executor (e.g.
 > [`web-qa`](https://github.com/arozumenko/sdlc-skills/tree/main/bundles/web-qa)) is a separate
 > product that uses this skill + the `onetest-tms` tools. See
-> [Architecture & Delivery](../docs/github-native/07-architecture-and-delivery.md).
+> [Architecture & Delivery](../design/github-native/07-architecture-and-delivery.md).
 
 ## Distribution
 

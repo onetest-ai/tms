@@ -83,9 +83,9 @@ back to the execution, and labels the execution `defect-linked`.
 create_defect({
   target: "onetest-ai/app-web",
   title: "Cart total wrong after coupon (staging)",
-  body_md: "Steps to reproduce… Expected 90.00, got 100.00",
+  body: "Steps to reproduce… Expected 90.00, got 100.00",
   severity: "High",
-  evidence: ["reports/RUN-SHOP-2026-05-29-001/screenshots/SHOP-0002.png"],
+  evidence: "reports/RUN-SHOP-2026-05-29-001/screenshots/SHOP-0002.png",
   from_execution: "onetest-ai/tm-shop#5"
 })
 // → defect onetest-ai/app-web#9
@@ -152,9 +152,9 @@ scripts/record-result.sh --execution onetest-ai/tm-shop#4 --result PASS \
 // 1. File the defect against the app
 create_defect({ target: "onetest-ai/app-web",
                 title: "Cart total wrong after coupon (staging)",
-                body_md: "Apply COUPON10 to a $100 cart. Expected $90.00, got $100.00.",
+                body: "Apply COUPON10 to a $100 cart. Expected $90.00, got $100.00.",
                 severity: "High",
-                evidence: ["reports/RUN-SHOP-2026-05-29-001/screenshots/SHOP-0002.png"],
+                evidence: "reports/RUN-SHOP-2026-05-29-001/screenshots/SHOP-0002.png",
                 from_execution: "onetest-ai/tm-shop#5" })
 // → onetest-ai/app-web#9
 

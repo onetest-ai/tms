@@ -20,7 +20,7 @@ Tell your agent what you want; it emits the OQL and runs `search_test_cases` for
 gh-CLI equivalent:
 
 ```
-scripts/oql-search.sh --query "tags CONTAINS 'smoke' AND priority = critical"
+scripts/oql-search.sh "tags CONTAINS 'smoke' AND priority = critical"
 ```
 
 Add `ids: true` to list just the matching case IDs so you can preview exactly what a query selects

@@ -83,7 +83,7 @@ record_result({
 })
 ```
 
-For a failure, record the reason and (optionally) file a defect in the same call:
+For a failure, record the reason and (optionally) link an existing defect in the same call:
 
 ```
 record_result({
@@ -92,7 +92,7 @@ record_result({
   failure_reason: "bug_in_app",
   notes: "Expected /cart, got HTTP 500",
   evidence: "reports/RUN-SHOP-2026-05-29-001/screenshots/SHOP-0002.png",
-  defect: { title: "500 when adding to cart (staging)", severity: "High" }
+  defect: "onetest-ai/app-web#9"
 })
 ```
 

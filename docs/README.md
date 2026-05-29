@@ -34,11 +34,11 @@ New here? Start with the [Introduction](getting-started/introduction.md), then t
 These are not user docs — they're the analysis and design behind OneTest TMS, for people building
 or extending it.
 
-- **Design of the git-native platform:** [`github-native/`](github-native/) — how OneTest maps onto
-  GitHub primitives, the [architecture & delivery](github-native/07-architecture-and-delivery.md)
-  model, the [`onetest-tms` spec](github-native/onetest-tms-spec.md), the
-  [functions catalog](github-native/functions.md), and the
-  [parity audit](github-native/parity-with-onetest.md).
+- **Design of the git-native platform:** [`github-native/`](../design/github-native/) — how OneTest maps onto
+  GitHub primitives, the [architecture & delivery](../design/github-native/07-architecture-and-delivery.md)
+  model, the [`onetest-tms` spec](../design/github-native/onetest-tms-spec.md), the
+  [functions catalog](../design/github-native/functions.md), and the
+  [parity audit](../design/github-native/parity-with-onetest.md).
 - **Analysis of the original OneTest platform** (reverse-engineered, the source for this
-  re-platform): [`overview.md`](overview.md), [`functionalities/`](functionalities/),
-  [`data-model/`](data-model/).
+  re-platform): [`overview.md`](../design/overview.md), [`functionalities/`](../design/functionalities/),
+  [`data-model/`](../design/data-model/).

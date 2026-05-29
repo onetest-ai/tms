@@ -19,8 +19,8 @@ reports. Test cases live in [`tests/`](tests/); config in [`.onetest/`](.onetest
 - **[`onetest-tms/`](onetest-tms/)** — the MCP server + gh-CLI engine (`scripts/`).
 - **[`skills/onetest-tms`](skills/onetest-tms/SKILL.md)** — the companion skill for agents consuming the TMS.
 - **For contributors:** the design & analysis behind it lives under
-  [`docs/github-native/`](docs/github-native/) and [`docs/functionalities`](docs/functionalities/) /
-  [`docs/data-model`](docs/data-model/).
+  [`design/github-native/`](design/github-native/) and [`design/functionalities`](design/functionalities/) /
+  [`design/data-model`](design/data-model/).
 
 ## Scope
 

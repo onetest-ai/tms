@@ -3,7 +3,7 @@
 Stdio MCP server that exposes the TMS [gh-CLI scripts](scripts) as MCP tools, so
 Claude Code / Copilot / VS Code agents (e.g. the `web-qa` `test-run-lead`) drive runs on GitHub.
 Thin adapter — all logic lives in `scripts/` (and their Python helpers). Implements the
-[`onetest-tms` spec](../docs/github-native/onetest-tms-spec.md).
+[`onetest-tms` spec](../design/github-native/onetest-tms-spec.md).
 
 ## Tools
 

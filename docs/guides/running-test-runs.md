@@ -27,7 +27,8 @@ The scope is the set of cases the run executes. Pick whichever selector fits:
 | `oql` | Query by tags, priority, status, type | `tags CONTAINS "smoke" AND priority IN (critical, high)` |
 | `folder` | Run everything under a path | `tests/cart` |
 | `glob` | Match a file pattern | `tests/**/checkout/*.md` |
-| `files` | Hand-pick specific cases | `tests/cart/SHOP-0001_add-to-cart.md` |
+
+> Hand-picking specific case files is supported by the gh-CLI (`create-run.sh tests/cart/SHOP-0001_add-to-cart.md`) but not as an MCP parameter — use `glob` or `folder` from your agent.
 
 Preview a query first so you know exactly what you'll run:
 
@@ -46,10 +47,10 @@ See the [OQL reference](../reference/oql.md) for the full query grammar and the
 create_run({
   repo: "onetest-ai/tm-shop",        // TM repo that owns the cases
   name: "Cart smoke",                // human-readable run name
-  oql: "tags CONTAINS 'smoke'",      // or folder / glob / files
+  oql: "tags CONTAINS 'smoke'",      // or folder / glob
   env: "staging",                    // environment label (default: staging)
   target: "onetest-ai/app-web",      // optional: override the target repo for all cases
-  assignees: ["alice", "bob"],       // optional: round-robin across executions
+  assignees: "alice,bob",            // optional: round-robin across executions
   dry_run: false                     // true → show the plan, create nothing
 })
 ```
@@ -58,7 +59,7 @@ create_run({
 | --- | --- |
 | `name` | The run name shown on the run issue and report. |
 | `repo` | The TM repo holding the cases. Omit to use the server default. |
-| `oql` / `folder` / `glob` / `files` | How cases are selected (one of these). |
+| `oql` / `folder` / `glob` | How cases are selected (one of these). |
 | `env` | Environment the run targets; resolves `{{base_url}}` in each execution body. |
 | `target` | Override the destination repo for executions. Omit to use each case's `targets[0]`, falling back to the TM repo. |
 | `assignees` | GitHub handles, assigned round-robin to the executions. |

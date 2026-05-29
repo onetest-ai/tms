@@ -15,7 +15,7 @@ tests/<suite>/<sub>/<ID>_<slug>.md      e.g. tests/authentication/login/TMS-0001
 - **URLs** use `{{base_url}}` — substituted at run time, keeping cases environment-agnostic.
 - **Format** follows the
   [web-qa test-case format](https://github.com/arozumenko/sdlc-skills/blob/main/bundles/web-qa/knowledge/test-case-format.md)
-  and the [GitHub-native test-case mapping](../docs/github-native/01-test-case-management.md).
+  and the [GitHub-native test-case mapping](../design/github-native/01-test-case-management.md).
 
 ### Dynamic suites
 A folder may contain a `_suite.yml` with `dynamic: true` and an `oql:` query; its membership is
