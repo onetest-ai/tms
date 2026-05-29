@@ -1,0 +1,6 @@
+# Example dynamic suite. Drop a file named `_suite.yml` into a folder under tests/ to make that
+# folder a dynamic suite: its membership is computed from the OQL query instead of stored.
+# Copy this into e.g. tests/regression/_suite.yml and adjust the query.
+dynamic: true
+oql: "tags CONTAINS 'regression' AND status = 'ready'"
+description: All ready cases tagged regression.

@@ -25,6 +25,7 @@ New here? Start with the [Introduction](getting-started/introduction.md), then t
 - [Test-case format](reference/test-case-format.md) — front-matter fields, body sections, allowed values
 - [OQL](reference/oql.md) — query syntax and searchable fields
 - [MCP tools](reference/mcp-tools.md) — the `onetest-tms` tool surface
+- [Report & artifact formats](reference/report-format.md) — run report, coverage, and JSON artifacts
 - [Configuration](reference/configuration.md) — the `.onetest/` config files
 
 ---

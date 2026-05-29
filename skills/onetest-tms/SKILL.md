@@ -68,6 +68,14 @@ automated (CI/JUnit) results; or checking automation coverage.
   through an MCP tool. Follow [references/test-case-format.md](references/test-case-format.md) for the
   exact front-matter fields, allowed values, body sections, and `{{base_url}}` rule.
 
+## Setup & troubleshooting helpers
+These ship with the `onetest-tms` package (run via the CLI / `bash scripts/<name>`):
+- If a tool fails with an auth/project/labels error, run **`doctor.sh [--repo OWNER/NAME]`** — it
+  checks gh auth + scopes, the QA Runs project, issue types, and the repo's labels/config.
+- To stand up a **new product TM repo** in one step:
+  **`provision-repo.sh --repo onetest-ai/tm-<name> --key <KEY> --targets <OWNER/REPO>`**.
+- Generated reports and JSON artifacts follow a documented shape — see the report-format reference.
+
 ## OQL quick reference
 `field OP value`, joined with `AND`/`OR`/`NOT` and `( )`; optional `ORDER BY f [ASC|DESC]`,
 `LIMIT n`, `OFFSET n`. Operators: `= != ~ !~ ^ $ > >= < <=`, `IN (...)`/`NOT IN (...)`,

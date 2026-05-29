@@ -1,0 +1,13 @@
+<!-- Sample JUnit report for trying the automated-results flow:
+     ingest_results({ file: "examples/sample-junit.xml", repo: "onetest-ai/tm-shop" })
+     then  correlate_results({ automated: "reports/automated/sample-junit.json", repo: "..." })
+     The classname holds the file+class so code_ref becomes file:Class.method to match a
+     case's automation_test_id (e.g. tests/e2e/cart.spec.ts:Cart.add). -->
+<testsuites>
+  <testsuite name="e2e" tests="2" failures="1">
+    <testcase classname="tests/e2e/cart.spec.ts:Cart" name="add" time="1.2"/>
+    <testcase classname="tests/e2e/cart.spec.ts:Cart" name="checkout" time="0.8">
+      <failure message="expected 200, got 500">AssertionError at checkout</failure>
+    </testcase>
+  </testsuite>
+</testsuites>
