@@ -1,10 +1,10 @@
 ---
-name: using-onetest-tms
+name: onetest-tms
 description: >-
-  Drive OneTest TMS (git-native test management) through the onetest-tms MCP — create and run test
-  runs, record execution results, search test cases with OQL, file defects, ingest automated
-  results, and report automation coverage. Use whenever you need to manage test cases, runs,
-  executions, defects, or reports backed by GitHub Issues, Projects, and repo files.
+  Use when you need to manage or run tests in OneTest TMS via the onetest-tms MCP — creating or
+  executing a test run, recording pass/fail results, searching test cases, filing defects,
+  ingesting CI/JUnit results, or checking automation coverage, where test cases, runs, and reports
+  live in GitHub Issues, Projects, and repo files.
 license: MIT
 version: 0.1.0
 metadata:

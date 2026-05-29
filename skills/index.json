@@ -1,9 +1,9 @@
 {
   "skills": [
     {
-      "name": "using-onetest-tms",
-      "path": "using-onetest-tms/SKILL.md",
-      "description": "How to manage test cases, runs, executions, defects, and reports in OneTest TMS through the onetest-tms MCP."
+      "name": "onetest-tms",
+      "path": "onetest-tms/SKILL.md",
+      "description": "Use when you need to manage or run tests in OneTest TMS via the onetest-tms MCP — creating or executing a run, recording results, searching cases, filing defects, ingesting CI results, or checking automation coverage."
     }
   ]
 }
