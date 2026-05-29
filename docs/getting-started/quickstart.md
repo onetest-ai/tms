@@ -31,6 +31,12 @@ you just describe what you want in chat.
 
   Restart your agent so it picks up the new server. The tools below should now be available.
 
+- *(Optional)* Install the **companion skill** so your agent knows how to drive the TMS:
+  ```bash
+  npx skills add onetest-ai/tms --skill onetest-tms -a claude-code
+  ```
+  See [skills/](https://github.com/onetest-ai/tms/tree/main/skills) for agents and options.
+
 ## 1. Find the cases you want to run
 
 Ask your agent to search the TM repo. Search takes an [OQL](../reference/oql.md) query (or a folder,

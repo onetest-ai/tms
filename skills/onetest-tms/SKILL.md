@@ -64,8 +64,9 @@ automated (CI/JUnit) results; or checking automation coverage.
 - **Evidence before PASS:** never record `PASS` without an `evidence` reference.
 - **Don't hand-edit** issue `Result`/labels — always go through `record_result` so the Project
   field and labels stay in sync.
-- **Authoring** test cases is done via a **pull request** of Markdown files to the TM repo (see the
-  repo's `tests/README.md`), not through an MCP tool.
+- **Authoring** test cases is done via a **pull request** of Markdown files to the TM repo, not
+  through an MCP tool. Follow [references/test-case-format.md](references/test-case-format.md) for the
+  exact front-matter fields, allowed values, body sections, and `{{base_url}}` rule.
 
 ## OQL quick reference
 `field OP value`, joined with `AND`/`OR`/`NOT` and `( )`; optional `ORDER BY f [ASC|DESC]`,
