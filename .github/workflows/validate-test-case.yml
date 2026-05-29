@@ -1,0 +1,18 @@
+# Function: validate-test-case — the HTTP-422 replacement.
+# Validates changed test-case files against .onetest/fields.yml + custom-fields.yml.
+# STUB: real validation runs once the onetest-gh package is published.
+name: validate-test-case
+on:
+  pull_request:
+    paths: ["tests/**", ".onetest/**"]
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate front-matter & field values
+        run: |
+          echo "TODO: npx -y onetest-gh-mcp validate --changed --base ${{ github.base_ref }}"
+          echo "Until the package ships, this is a no-op placeholder (see docs/github-native/onetest-gh-mcp-spec.md §H)."

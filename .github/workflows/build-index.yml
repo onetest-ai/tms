@@ -1,0 +1,19 @@
+# Function: build-index — scans test-case front-matter into index.json (backs OQL search).
+# STUB until onetest-gh ships.
+name: build-index
+on:
+  push:
+    branches: [main]
+    paths: ["tests/**", ".onetest/fields.yml"]
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build-index:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build front-matter index
+        run: |
+          echo "TODO: npx -y onetest-gh-mcp build-index"
+          echo "Writes index.json from tests/**. Placeholder (see docs/github-native/onetest-gh-mcp-spec.md §G)."

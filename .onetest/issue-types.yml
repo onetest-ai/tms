@@ -1,0 +1,30 @@
+# Org-level Issue Types for TMS (the *kind* of work item).
+# Issue Types are an ORGANIZATION setting and need the `admin:org` scope to
+# create. Apply with: scripts/apply-issue-types.sh  (after
+# `gh auth refresh -h github.com -s admin:org`, or have an org owner run it).
+# Until applied, the equivalent `kind:*` labels in labels.yml are the fallback.
+schema_version: 1
+
+# The org already ships defaults: Task, Bug, Feature. These add the TMS taxonomy.
+types:
+  - name: Test Run
+    description: A test run cycle that aggregates executions
+    color: purple
+    fallback_label: "kind:run"
+  - name: Test Execution
+    description: One test case executed within a run (the testing task)
+    color: green
+    fallback_label: "kind:execution"
+  - name: Defect
+    description: A bug found during testing
+    color: red
+    fallback_label: "kind:defect"
+  - name: Exploratory Finding
+    description: An unplanned finding outside scripted cases
+    color: orange
+    fallback_label: "kind:finding"
+
+# Mapping notes:
+# - Test cases themselves are NOT issues — they are files + PRs in tests/.
+# - A Defect may alternatively reuse the built-in "Bug" type if you prefer
+#   fewer custom types; the run/execution/finding types have no built-in match.

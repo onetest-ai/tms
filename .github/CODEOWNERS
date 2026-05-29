@@ -1,0 +1,13 @@
+# Review routing for the test-management repo.
+# Replace with real teams once they exist in the org.
+
+# All test assets reviewed by the QA team.
+*                       @onetest-ai/qa
+
+# Config changes are higher-stakes — require QA leads.
+/.onetest/              @onetest-ai/qa-leads
+/.github/               @onetest-ai/qa-leads
+
+# Per-suite ownership (examples)
+# /tests/authentication/ @onetest-ai/qa-auth
+# /tests/checkout/       @onetest-ai/qa-payments

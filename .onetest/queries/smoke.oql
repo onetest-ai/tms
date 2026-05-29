@@ -1,0 +1,2 @@
+# Saved query: smoke suite. Used by create_run --scope, or as a dynamic suite.
+tags CONTAINS "smoke" AND priority IN (critical, high) ORDER BY priority

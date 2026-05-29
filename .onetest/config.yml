@@ -1,0 +1,45 @@
+# OneTest TMS — repository configuration
+# This is the per-(test-management)-repo config. In a product TM repo, change
+# `source_key`, `name`, and `targets` to match that product.
+schema_version: 1
+
+# Identity -------------------------------------------------------------------
+source_key: TMS                 # ID prefix → cases get IDs like TMS-0001 (immutable; never reuse)
+name: TMS Scaffold              # human name of this test-management repo
+product_type: webapp            # webapp | api | mobile
+id_format: "{source_key}-{seq:04d}"   # source-based identity; seq allocated per repo (allocate-id)
+
+# Routing --------------------------------------------------------------------
+# Target repos under test. A case may override via its front-matter `targets:`.
+# Empty = execution Issues are created in THIS repo (centralized-QA mode).
+default_targets: []             # e.g. [onetest-ai/app-web, onetest-ai/app-api]
+
+# Org Project (run/quality board). number is set by scripts/bootstrap-project.sh.
+project:
+  org: onetest-ai
+  number: null
+
+# Environments the runs target (run context).
+environments:
+  - name: staging
+    url: https://staging.example.com
+    default: true
+  - name: production
+    url: https://example.com
+    default: false
+
+# Paths ----------------------------------------------------------------------
+paths:
+  tests: tests                  # test-case files (the folder tree == suites)
+  reports: reports              # generated run reports + evidence
+  index: index.json             # generated front-matter index (backs OQL search)
+
+# Automation correlation -----------------------------------------------------
+automation:
+  # Normalize automation_test_id (cases) and code_ref (CI) to file:Class.method
+  normalize_refs: true
+
+# Reporting ------------------------------------------------------------------
+reporting:
+  pages_path: docs/reports      # publish_report writes HTML here for GitHub Pages
+  pass_rate: passed_over_total  # canonical definition (passed / total)

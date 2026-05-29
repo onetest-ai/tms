@@ -1,0 +1,38 @@
+name: Test Run
+description: Request a test run — dispatches create-run to generate execution tasks on the board.
+title: "[RUN] "
+labels: ["kind:run", "run:planned", "onetest"]
+type: "Test Run"
+body:
+  - type: markdown
+    attributes:
+      value: "Filing this issue triggers `create-run`, which resolves the scope and creates one Test Execution task per case on the run board."
+  - type: input
+    id: name
+    attributes:
+      label: Run name
+      placeholder: Smoke app-web staging
+    validations: { required: true }
+  - type: input
+    id: scope
+    attributes:
+      label: Scope (OQL, folders, or IDs)
+      placeholder: tags CONTAINS 'smoke' AND priority IN (critical, high)
+    validations: { required: true }
+  - type: input
+    id: targets
+    attributes:
+      label: Target repo(s)
+      description: Comma-separated; defaults to each case's `targets:`
+      placeholder: onetest-ai/app-web
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Environment
+      options: [staging, production]
+    validations: { required: true }
+  - type: input
+    id: assignees
+    attributes:
+      label: Assignees
+      placeholder: "@alice, @bob   (or: codeowners)"

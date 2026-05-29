@@ -1,0 +1,27 @@
+# Org Project (v2) schema for the run/quality board.
+# Created/ensured by scripts/bootstrap-project.sh (GraphQL; needs project scope).
+# The `onetest-gh` MCP resolves and caches these field/option node IDs at runtime.
+schema_version: 1
+
+project:
+  org: onetest-ai
+  title: "QA Runs"
+  # number filled in after creation → also write it back into .onetest/config.yml
+
+# Single-select + text fields the create_run / record_result tools set.
+fields:
+  - { name: Result, type: single_select,
+      options: ["Not run", "In progress", "Passed", "Failed", "Blocked", "Skipped"] }
+  - { name: Run,    type: text }                 # RUN-YYYY-MM-DD-NNN (human run id)
+  - { name: Case,   type: text }                 # source case id, e.g. TMS-0001
+  - { name: Target, type: single_select, options: [] }   # populated from default_targets
+  - { name: Priority, type: single_select, options: [critical, high, medium, low] }
+  - { name: Size,   type: single_select, options: [S, M, L] }
+  - { name: "Failure reason", type: single_select,
+      options: [bug_in_app, test_data_issue, environment_issue, test_needs_update, blocked_by_other, other] }
+  # Built-ins also used: Assignees, Status, Iteration (optional cadence)
+
+views:
+  - { name: "By run",        group_by: Run,    filter: "" }
+  - { name: "My queue",      filter: "assignee:@me result:\"Not run\",\"In progress\"" }
+  - { name: "Failures",      filter: "result:Failed" }

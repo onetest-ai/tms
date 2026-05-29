@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: TMS documentation
+    url: https://github.com/onetest-ai/tms/tree/main/docs
+    about: How test cases, runs, executions, and reporting work in this repo.
+  - name: Add or edit a test case
+    url: https://github.com/onetest-ai/tms/tree/main/tests
+    about: Test cases are files + PRs, not issues. See tests/README.md.

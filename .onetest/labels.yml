@@ -1,0 +1,43 @@
+# Repo labels for TMS. Repo-scoped (no admin:org needed).
+# Apply with: scripts/apply-labels.sh
+# `kind:*` are the fallback for Issue Types until those are applied org-wide.
+schema_version: 1
+
+labels:
+  # Kind (fallback for Issue Types) -----------------------------------------
+  - { name: "kind:run",          color: "8957e5", description: "A test run cycle (parent issue)" }
+  - { name: "kind:execution",    color: "2da44e", description: "One test case executed in a run" }
+  - { name: "kind:defect",       color: "d73a4a", description: "A bug found during testing" }
+  - { name: "kind:finding",      color: "fb8500", description: "Exploratory finding" }
+
+  # Run status ---------------------------------------------------------------
+  - { name: "run:planned",       color: "c5def5", description: "Run created, not started" }
+  - { name: "run:in-progress",   color: "0969da", description: "Run executing" }
+  - { name: "run:completed",     color: "1a7f37", description: "Run finished" }
+  - { name: "run:aborted",       color: "6e7781", description: "Run cancelled" }
+
+  # Execution result (mirror of the Project Result field) --------------------
+  - { name: "result:not-run",    color: "eeeeee", description: "Not yet executed" }
+  - { name: "result:passed",     color: "1a7f37", description: "Passed" }
+  - { name: "result:failed",     color: "d73a4a", description: "Failed" }
+  - { name: "result:blocked",    color: "bf8700", description: "Blocked" }
+  - { name: "result:skipped",    color: "8c959f", description: "Skipped" }
+
+  # Priority -----------------------------------------------------------------
+  - { name: "priority:critical", color: "b60205", description: "Blocks release" }
+  - { name: "priority:high",     color: "d93f0b", description: "Major feature" }
+  - { name: "priority:medium",   color: "fbca04", description: "Standard" }
+  - { name: "priority:low",      color: "0e8a16", description: "Cosmetic / edge" }
+
+  # Failure reason -----------------------------------------------------------
+  - { name: "fail:bug-in-app",          color: "d73a4a", description: "Product defect" }
+  - { name: "fail:test-data",           color: "e99695", description: "Test data issue" }
+  - { name: "fail:environment",         color: "fef2c0", description: "Environment issue" }
+  - { name: "fail:test-needs-update",   color: "c2e0c6", description: "Test out of date" }
+  - { name: "fail:blocked-by-other",    color: "d4c5f9", description: "Blocked by another test" }
+  - { name: "fail:other",               color: "ededed", description: "Other" }
+
+  # Misc ---------------------------------------------------------------------
+  - { name: "onetest",           color: "5319e7", description: "Managed by OneTest TMS automation" }
+  - { name: "defect-linked",     color: "5319e7", description: "Execution has a linked defect" }
+  - { name: "exploratory",       color: "fb8500", description: "From exploratory testing" }

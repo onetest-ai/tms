@@ -1,0 +1,17 @@
+# Per-repo custom field definitions (OneTest custom_field_definitions).
+# Values are stored in each test case's front-matter under `custom_fields:`.
+# `validate-test-case` enforces these. Empty by default — uncomment to add.
+schema_version: 1
+fields: []
+
+# Example:
+# fields:
+#   - name: jira_ticket          # ^[a-z][a-z0-9_]*$
+#     label: Jira Ticket
+#     type: text                 # text|textarea|select|multiselect|number|date|checkbox
+#     required: false
+#   - name: regulatory_area
+#     label: Regulatory Area
+#     type: select
+#     options: [pci, gdpr, hipaa]
+#     required: false

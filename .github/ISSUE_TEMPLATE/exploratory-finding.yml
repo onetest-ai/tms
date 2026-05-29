@@ -1,0 +1,29 @@
+name: Exploratory Finding
+description: An unplanned finding discovered outside scripted test cases.
+title: "[FINDING] "
+labels: ["kind:finding", "exploratory", "onetest"]
+type: "Exploratory Finding"
+body:
+  - type: input
+    id: area
+    attributes:
+      label: Area / module
+      placeholder: checkout
+    validations: { required: true }
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      options: [High, Medium, Low]
+    validations: { required: true }
+  - type: textarea
+    id: description
+    attributes:
+      label: What did you find?
+      description: What happened, where, and why it matters. Attach evidence.
+    validations: { required: true }
+  - type: input
+    id: run
+    attributes:
+      label: Run (if during a run)
+      placeholder: RUN-2026-05-29-001

@@ -1,0 +1,32 @@
+name: Defect
+description: A bug found during testing.
+title: "[DEFECT] "
+labels: ["kind:defect", "onetest"]
+type: "Defect"
+body:
+  - type: input
+    id: from_execution
+    attributes:
+      label: Found in execution
+      placeholder: "onetest-ai/app-web#318 (or TMS-0001)"
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      options: [High, Medium, Low]
+    validations: { required: true }
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+    validations: { required: true }
+  - type: textarea
+    id: expected_actual
+    attributes:
+      label: Expected vs actual
+    validations: { required: true }
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence
+      description: Screenshots, console errors, environment/build

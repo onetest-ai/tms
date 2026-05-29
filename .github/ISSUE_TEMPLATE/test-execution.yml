@@ -1,0 +1,38 @@
+name: Test Execution
+description: A single test case executed within a run. Usually created by create-run; this form is for manual/ad-hoc entry.
+title: "[EXEC] "
+labels: ["kind:execution", "result:not-run", "onetest"]
+type: "Test Execution"
+body:
+  - type: input
+    id: case_id
+    attributes:
+      label: Test case ID
+      placeholder: TMS-0001
+    validations: { required: true }
+  - type: input
+    id: run
+    attributes:
+      label: Run
+      placeholder: RUN-2026-05-29-001
+  - type: dropdown
+    id: result
+    attributes:
+      label: Result
+      options: ["Not run", "In progress", "Passed", "Failed", "Blocked", "Skipped"]
+    validations: { required: true }
+  - type: textarea
+    id: steps
+    attributes:
+      label: Step results
+      description: One line per step — `1. PASS`, `2. FAIL — got 500`
+  - type: dropdown
+    id: failure_reason
+    attributes:
+      label: Failure reason (if failed)
+      options: [bug_in_app, test_data_issue, environment_issue, test_needs_update, blocked_by_other, other]
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence / notes
+      description: Screenshot links, console output, defect references

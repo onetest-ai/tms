@@ -1,0 +1,32 @@
+# Config-driven field allow-lists — the git-native replacement for OneTest's
+# product_field_values / workspace_field_values (and the HTTP 422 it returned).
+# `validate-test-case` checks every test-case file's front-matter against these
+# on each PR. Org-wide defaults can live in the org `.github` repo and be
+# layered under these per-repo values.
+schema_version: 1
+
+status:
+  default: draft
+  values: [draft, ready, deprecated]
+
+execution_type:                 # needed for automation coverage (manual vs automated)
+  default: manual
+  values: [manual, automated]
+
+test_category:                  # OneTest test_category; web-qa folds this into `type`
+  default: functional
+  values: [functional, performance, security, accessibility, exploratory]
+
+# Adopted priority scheme = the shipping web-qa one. This supersedes OneTest's
+# conflicting p0–p3 / p1–p4 / P0–P4. One scheme platform-wide.
+priority:
+  default: medium
+  values: [critical, high, medium, low]
+
+# Agent-execution cost; assigned by the web-qa test-sizer. Optional on a case.
+size:
+  values: [S, M, L]
+
+# Execution failure classification (used on execution Issues / Project field).
+failure_reason:
+  values: [bug_in_app, test_data_issue, environment_issue, test_needs_update, blocked_by_other, other]

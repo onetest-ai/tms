@@ -1,0 +1,28 @@
+# Function: create-run — resolve scope → create execution tasks + Project board.
+# Triggered by a "Test Run" issue (form) or manual dispatch. STUB until onetest-gh ships.
+name: create-run
+on:
+  workflow_dispatch:
+    inputs:
+      name: { description: "Run name", required: true }
+      scope: { description: "OQL / folders / IDs", required: true }
+      environment: { description: "Environment", required: true, default: staging }
+      targets: { description: "Target repo(s), comma-separated", required: false }
+  issues:
+    types: [opened, labeled]
+permissions:
+  contents: read
+  issues: write
+jobs:
+  create-run:
+    # For the issues trigger, only act on Test Run requests.
+    if: github.event_name == 'workflow_dispatch' || contains(join(github.event.issue.labels.*.name, ','), 'kind:run')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create run (tasks + Project)
+        env:
+          GH_TOKEN: ${{ secrets.OT_GH_APP_TOKEN }}   # GitHub App token (cross-repo). TODO: configure secret.
+        run: |
+          echo "TODO: npx -y onetest-gh-mcp create-run --name '<name>' --scope '<scope>' --env '<env>'"
+          echo "Resolves scope → execution Issues in target repos → org Project. (spec §B create_run)"
