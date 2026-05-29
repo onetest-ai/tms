@@ -1,77 +1,44 @@
-# OneTest — Functionality & Data Model Reference
+# OneTest TMS — Documentation
 
-This folder documents the **OneTest** platform (https://onetest.ai, GitHub org
-[`onetest-ai`](https://github.com/onetest-ai)) as it exists today, ahead of a planned
-**re-platforming to a git-native architecture with no backend services**.
+**OneTest TMS** is a git-native test management system. Your test cases are files in a GitHub
+repo, your test runs and executions are GitHub Issues on a Project board, and your reports are
+Markdown committed back to the repo. You operate it by talking to an AI agent (Claude Code,
+GitHub Copilot, VS Code) that has the **`onetest-tms`** MCP configured.
 
-It captures *what the product does* and *how its data is modelled and related*, so the
-git-native target can preserve behaviour while replacing the Postgres-per-service backend
-with files in a repository.
+New here? Start with the [Introduction](getting-started/introduction.md), then the
+[Quickstart](getting-started/quickstart.md).
 
-> **Scope.** This documentation covers the four critical functionalities only:
-> 1. [Test Case Management](functionalities/01-test-case-management.md)
-> 2. [Test Execution Management](functionalities/02-test-execution-management.md)
-> 3. [Automated Test Results Management](functionalities/03-automated-test-results-management.md)
-> 4. [Correlations & Reporting](functionalities/04-correlations-and-reporting.md)
->
-> **Pipelines** and **CredPools** are explicitly **out of scope** and only mentioned where
-> a foreign key or column references them.
+## Get started
+- [Introduction](getting-started/introduction.md) — what OneTest TMS is and how it maps to GitHub
+- [Quickstart](getting-started/quickstart.md) — connect the MCP and run your first test run in ~5 minutes
+- [Concepts & glossary](getting-started/concepts.md) — cases, runs, executions, the board, coverage
 
-## How to read this
+## Guides
+- [Authoring test cases](guides/authoring-test-cases.md) — write, organize, and version test cases
+- [Running test runs](guides/running-test-runs.md) — create, execute, and complete a run
+- [Recording results](guides/recording-results.md) — pass/fail, evidence, defects, re-runs
+- [Automated results](guides/automated-results.md) — bring CI/JUnit results in and link them to cases
+- [Reports & coverage](guides/reports-and-coverage.md) — run reports, the board, automation coverage
+- [Searching with OQL](guides/searching-with-oql.md) — find tests in plain language or OQL
 
-| Folder | Purpose |
-| --- | --- |
-| [`overview.md`](overview.md) | Platform summary, service/repo map, and git-native re-platforming considerations. |
-| [`functionalities/`](functionalities/) | Behaviour-oriented docs — one file per critical functionality, plus AI assistant and the OQL query language. |
-| [`data-model/`](data-model/) | Schema-oriented docs — every entity, column, key, enum, and relationship, organised by domain, plus a consolidated relationship map. |
-| [`github-native/`](github-native/) | **Re-platform target** — feature-to-feature mapping of OneTest onto GitHub primitives (org/repos/Projects/Actions), with a functions catalog. |
+## Reference
+- [Test-case format](reference/test-case-format.md) — front-matter fields, body sections, allowed values
+- [OQL](reference/oql.md) — query syntax and searchable fields
+- [MCP tools](reference/mcp-tools.md) — the `onetest-tms` tool surface
+- [Configuration](reference/configuration.md) — the `.onetest/` config files
 
-## Functionalities
+---
 
-- [01 — Test Case Management](functionalities/01-test-case-management.md)
-- [02 — Test Execution Management](functionalities/02-test-execution-management.md)
-- [03 — Automated Test Results Management](functionalities/03-automated-test-results-management.md)
-- [04 — Correlations & Reporting](functionalities/04-correlations-and-reporting.md)
-- [AI Assistant](functionalities/ai-assistant.md)
-- [OQL — OneTest Query Language](functionalities/oql-query-language.md)
+## For contributors (background & design)
 
-## Data model
+These are not user docs — they're the analysis and design behind OneTest TMS, for people building
+or extending it.
 
-- [Conventions & overview](data-model/README.md)
-- [01 — Foundational / shared entities](data-model/01-foundational.md)
-- [02 — Test Case Management](data-model/02-test-case-management.md)
-- [03 — Test Execution](data-model/03-test-execution.md)
-- [04 — Automated Results](data-model/04-automated-results.md)
-- [Cross-domain relationship map](data-model/relationships.md)
-
-## GitHub-native re-platform mapping
-
-- [Mapping overview, principles & master feature table](github-native/README.md)
-- [Repository topology (no co-location: TM repos vs target repos)](github-native/00-repo-topology.md)
-- [01 — Test Case Management → files + git + PRs](github-native/01-test-case-management.md)
-- [02 — Test Execution → Projects + Issues](github-native/02-test-execution-management.md)
-- [03 — Automated Results → Actions + artifacts](github-native/03-automated-test-results.md)
-- [04 — Correlations & Reporting → functions + Pages + Insights](github-native/04-correlations-and-reporting.md)
-- [05 — Test Run UX (Copilot/Claude/VS Code agents + MCP)](github-native/05-test-run-ux.md)
-- [`onetest-tms` MCP tool spec (buildable contract)](github-native/onetest-tms-spec.md)
-- [Parity with OneTest (TCM + Execution audit)](github-native/parity-with-onetest.md)
-- [Functions catalog (the Actions that replace the backend)](github-native/functions.md)
-
-## Source of this documentation
-
-Compiled by reading the org's repositories directly (private repos read via authenticated
-GitHub access) and the public docs site. Where the published `schema.sql` lags behind ORM
-models and later migrations, **the ORM + latest migrations are treated as authoritative** and
-the drift is flagged inline. Where the user-facing docs describe aspirational fields that do
-not exist in code, that is flagged too.
-
-Primary sources per domain:
-
-| Domain | Repos / files |
-| --- | --- |
-| Foundational | `membership`, `onetest-auth`, `gateway`, `artifacts` |
-| Test Case Management | `test-management` (`schema.sql`, `migrations/001–022`, `src/.../db/models.py`) |
-| Test Execution | `test-management`, `core` (React UI), `qa-agent`, `octobots`, `Octo`, `mcp-host` |
-| Automated Results | `receiver`, `onetest-otel` |
-| Correlations / OQL / Reporting | `onetest-oql`, `test-management` (`api/search.py`, `api/reporting.py`, `db/repository.py`) |
-| User-facing docs | `docs` (Mintlify MDX) and https://onetest.ai |
+- **Design of the git-native platform:** [`github-native/`](github-native/) — how OneTest maps onto
+  GitHub primitives, the [architecture & delivery](github-native/07-architecture-and-delivery.md)
+  model, the [`onetest-tms` spec](github-native/onetest-tms-spec.md), the
+  [functions catalog](github-native/functions.md), and the
+  [parity audit](github-native/parity-with-onetest.md).
+- **Analysis of the original OneTest platform** (reverse-engineered, the source for this
+  re-platform): [`overview.md`](overview.md), [`functionalities/`](functionalities/),
+  [`data-model/`](data-model/).

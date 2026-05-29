@@ -6,29 +6,30 @@ services** — test assets as files, runs as Issues/Projects, behaviour as GitHu
 `onetest-tms` MCP server driven by the [`web-qa`](https://github.com/arozumenko/sdlc-skills/tree/main/bundles/web-qa)
 agent family.
 
-> **Status:** documentation / design only. This precedes the actual scaffolding automation and MCP
-> implementation — it's the shared source of truth those will be built from.
+The TMS is operated through the **`onetest-tms`** MCP server ([`onetest-tms/`](onetest-tms/)) — a
+local stdio process that turns agent tool calls into GitHub Issues, Project items, and committed
+reports. Test cases live in [`tests/`](tests/); config in [`.onetest/`](.onetest/).
 
 ## Start here
 
-- **[`docs/`](docs/)** — the full reference.
-  - [`docs/README.md`](docs/README.md) — index.
-  - [`docs/overview.md`](docs/overview.md) — platform & architecture, re-platforming notes.
-  - [`docs/functionalities/`](docs/functionalities/) — what OneTest does (behaviour).
-  - [`docs/data-model/`](docs/data-model/) — every entity, column, key, relation.
-  - [`docs/github-native/`](docs/github-native/) — the GitHub-native target: topology, per-domain
-    mapping, [test-run UX](docs/github-native/05-test-run-ux.md),
-    [`onetest-tms` MCP spec](docs/github-native/onetest-tms-spec.md),
-    [parity audit](docs/github-native/parity-with-onetest.md), and the
-    [functions catalog](docs/github-native/functions.md).
+- **[Documentation](docs/)** — the OneTest TMS manual:
+  [Introduction](docs/getting-started/introduction.md) ·
+  [Quickstart](docs/getting-started/quickstart.md) ·
+  [Guides](docs/guides/) · [Reference](docs/reference/).
+- **[`onetest-tms/`](onetest-tms/)** — the MCP server + gh-CLI engine (`scripts/`).
+- **[`skills/onetest-tms`](skills/onetest-tms/SKILL.md)** — the companion skill for agents consuming the TMS.
+- **For contributors:** the design & analysis behind it lives under
+  [`docs/github-native/`](docs/github-native/) and [`docs/functionalities`](docs/functionalities/) /
+  [`docs/data-model`](docs/data-model/).
 
 ## Scope
 
 In scope: **test case management, test execution management, automated test results, correlations
 & reporting.** Out of scope: pipelines, credpools, billing/metering.
 
-## Next steps (not yet done)
+## Status
 
-1. Scaffolding automation (repo templates, `.onetest/` config, reusable Actions).
-2. The `onetest-tms` npx package (stdio MCP + CLI) per the spec.
-3. `web-qa` agent diffs to call the MCP instead of writing local files.
+The TMS works today via the `onetest-tms` MCP/CLI: provision a repo, author cases, create runs,
+record results, ingest automated results, and report coverage — all backed by GitHub. Remaining
+packaging steps: publish `onetest-tms` to npm, and strip the engine out of generated product repos
+so they're content-only.
