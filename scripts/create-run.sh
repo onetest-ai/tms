@@ -68,11 +68,14 @@ for f in "${CAND[@]}"; do
 done
 [ ${#SELECTED[@]} -gt 0 ] || { echo "scope matched no test cases" >&2; exit 1; }
 
-# ---- run id (RUN-YYYY-MM-DD-NNN) ------------------------------------------
-TODAY="$(date +%Y-%m-%d)"
-LASTN="$(gh issue list --repo "$RUN_REPO" --label kind:run --search "RUN-$TODAY in:title" --state all --json title \
-          -q '[.[].title | capture("RUN-'"$TODAY"'-(?<n>[0-9]+)").n | tonumber] | max // 0' 2>/dev/null || echo 0)"
-RUN_ID="RUN-$TODAY-$(printf '%03d' $((LASTN + 1)))"
+# ---- run id (RUN-<SOURCE_KEY>-YYYY-MM-DD-NNN) -----------------------------
+# The source key keeps the run id unique on the shared org Project board, so
+# aggregation never mixes runs from different TM repos.
+KEY="$(sed -n 's/^source_key:[[:space:]]*\([A-Za-z0-9_-]\{1,\}\).*/\1/p' .onetest/config.yml 2>/dev/null | head -1)"; KEY="${KEY:-RUN}"
+TODAY="$(date +%Y-%m-%d)"; PREFIX="RUN-$KEY-$TODAY"
+LASTN="$(gh issue list --repo "$RUN_REPO" --label kind:run --search "$PREFIX in:title" --state all --json title \
+          -q '[.[].title | capture("'"$PREFIX"'-(?<n>[0-9]+)").n | tonumber] | max // 0' 2>/dev/null || echo 0)"
+RUN_ID="$PREFIX-$(printf '%03d' $((LASTN + 1)))"
 
 # ---- plan / dry-run -------------------------------------------------------
 echo "Run:        $NAME ($RUN_ID)"
