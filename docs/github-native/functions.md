@@ -17,9 +17,9 @@ Implementation options for a function (pick per case):
 Per the [Test Run UX](05-test-run-ux.md), the functions ship as **one npx package** with the
 heavy logic **in code** (not in agent prompts), exposed two ways:
 
-- **stdio MCP server** — `npx -y onetest-gh-mcp` — so Claude Code / Copilot / VS Code agents call
+- **stdio MCP server** — `npx -y onetest-tms` — so Claude Code / Copilot / VS Code agents call
   the functions as tools interactively (assisted mode).
-- **CLI** — the same binary with subcommands (`onetest-gh create-run …`, `… parse-results …`) —
+- **CLI** — the same binary with subcommands (`onetest-tms create-run …`, `… parse-results …`) —
   invoked inside GitHub Actions for autonomous/CI runs.
 
 Both entry points call the *same* code: OQL→scope resolution, GitHub API orchestration (create N

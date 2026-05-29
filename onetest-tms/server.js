@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// onetest-gh — MCP (stdio) server. Thin adapter exposing the gh-CLI scripts as
+// onetest-tms — MCP (stdio) server. Thin adapter exposing the gh-CLI scripts as
 // MCP tools; all real processing stays in scripts/ (and their python helpers).
 //
 // Repo-parameterized (Tier 1): tools accept an optional `repo` (OWNER/NAME).
@@ -17,10 +17,9 @@ import { fileURLToPath } from "node:url";
 import os from "node:os";
 import path from "node:path";
 
-const DIR = path.dirname(fileURLToPath(import.meta.url));
-const PKG = path.resolve(DIR, "..");                 // the onetest-gh package (holds scripts/)
-const SCRIPTS = path.join(PKG, "scripts");           // always run the package's scripts
-const DEFAULT_CWD = process.env.OT_REPO_ROOT || PKG; // when no `repo` arg is given
+const DIR = path.dirname(fileURLToPath(import.meta.url));      // the onetest-tms package dir
+const SCRIPTS = path.join(DIR, "scripts");                     // engine ships inside the package
+const DEFAULT_CWD = process.env.OT_REPO_ROOT || path.resolve(DIR, ".."); // when no `repo` arg is given
 const WS = process.env.OT_WORKSPACE || path.join(os.homedir(), ".onetest-workspaces");
 
 function execP(cmd, args, opts = {}) {
@@ -62,7 +61,7 @@ const f = (name, v) =>
   v === undefined || v === null || v === false || v === "" ? [] : v === true ? [name] : [name, String(v)];
 const REPO = { repo: z.string().optional().describe("TM repo OWNER/NAME; defaults to the server's repo") };
 
-const server = new McpServer({ name: "onetest-gh", version: "0.2.0" });
+const server = new McpServer({ name: "onetest-tms", version: "0.2.0" });
 
 server.registerTool("build_index",
   { description: "Rebuild index.json from tests/ front-matter (backs search & coverage).", inputSchema: { ...REPO } },

@@ -1,10 +1,10 @@
-# `onetest-gh` MCP — Tool Specification
+# `onetest-tms` MCP — Tool Specification
 
 The buildable contract for the npx package that bridges the [web-qa agent family](05-test-run-ux.md)
 to GitHub. One package, two entry points, **logic in code**:
 
-- **stdio MCP server** — `npx -y onetest-gh-mcp` — tools for Claude Code / Copilot / VS Code agents.
-- **CLI** — `onetest-gh <command>` — same code, for GitHub Actions / autonomous runs.
+- **stdio MCP server** — `npx -y onetest-tms` — tools for Claude Code / Copilot / VS Code agents.
+- **CLI** — `onetest-tms <command>` — same code, for GitHub Actions / autonomous runs.
 
 This spec defines tools, input/output schemas, and the GitHub API calls each makes. It implements
 the [functions catalog](functions.md) over the [repo topology](00-repo-topology.md) and
@@ -28,8 +28,8 @@ Node ≥ 20. Config via env (or `.onetest/config.yml` in the TM repo, overridabl
 
 MCP config (`.mcp.json` / `.vscode/mcp.json`):
 ```jsonc
-{ "mcpServers": { "onetest-gh": {
-  "type": "stdio", "command": "npx", "args": ["-y", "onetest-gh-mcp"],
+{ "mcpServers": { "onetest-tms": {
+  "type": "stdio", "command": "npx", "args": ["-y", "onetest-tms"],
   "env": { "GITHUB_TOKEN": "${OT_GH_APP_TOKEN}", "OT_TM_REPO": "org/tm-login",
            "OT_ORG": "org", "OT_PROJECT": "12", "OT_SOURCE_KEY": "LOGIN" } } } }
 ```
@@ -371,13 +371,13 @@ Closes the remaining gaps vs OneTest **Test Execution Management**:
 
 Every tool has a CLI subcommand (same inputs as flags/JSON, same outputs as JSON to stdout):
 ```
-onetest-gh create-run   --name "Smoke" --scope "tags CONTAINS 'smoke'" --env staging
-onetest-gh record-result --execution org/app-web#318 --json result.json
-onetest-gh ingest-automated-results --junit results.xml --target app-web --dispatch-to-tm
-onetest-gh correlate-results
-onetest-gh coverage --targets app-web
-onetest-gh complete-run --run-id RUN-2026-05-29-001 --publish
-onetest-gh build-index
+onetest-tms create-run   --name "Smoke" --scope "tags CONTAINS 'smoke'" --env staging
+onetest-tms record-result --execution org/app-web#318 --json result.json
+onetest-tms ingest-automated-results --junit results.xml --target app-web --dispatch-to-tm
+onetest-tms correlate-results
+onetest-tms coverage --targets app-web
+onetest-tms complete-run --run-id RUN-2026-05-29-001 --publish
+onetest-tms build-index
 ```
 Used by GitHub Actions for autonomous/CI runs (`ai-run`, `parse-automated-results`).
 

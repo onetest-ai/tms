@@ -4,7 +4,7 @@
 layout, config-as-code, issue types, labels, templates, and function stubs that product TM repos
 are generated from (mark it a GitHub **template repository**). It implements
 [topology](00-repo-topology.md), the [data model](../data-model/), and the
-[`onetest-gh` spec](onetest-gh-mcp-spec.md).
+[`onetest-tms` spec](onetest-tms-spec.md).
 
 ## Layout
 
@@ -52,8 +52,8 @@ docs/                     this documentation set
 
 ## Status of the stubs
 
-A reference **MCP server** now lives in [`mcp/`](../../mcp) — a thin stdio adapter exposing the
-[`scripts/`](../../scripts) as the 12 [`onetest-gh`](onetest-gh-mcp-spec.md) tools
+A reference **MCP server** now lives in [`mcp/`](../../onetest-tms) — a thin stdio adapter exposing the
+[`scripts/`](../../onetest-tms/scripts) as the 12 [`onetest-tms`](onetest-tms-spec.md) tools
 (`npm test` exercises it). The `.github/workflows/*` are **placeholders** that document intent and
 stay green until the scripts/MCP are wired into CI.
 

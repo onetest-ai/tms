@@ -4,7 +4,7 @@ A capability-by-capability audit that the github-native design reaches parity wi
 core management domains. Each row maps a OneTest capability (from
 [Functionality 01](../functionalities/01-test-case-management.md) /
 [02](../functionalities/02-test-execution-management.md), grounded in the real REST + MCP surface)
-to its github-native realization and the [`onetest-gh` tool](onetest-gh-mcp-spec.md) or native
+to its github-native realization and the [`onetest-tms` tool](onetest-tms-spec.md) or native
 mechanism that delivers it.
 
 **Legend:** ✅ covered · ◑ covered with a deliberate change · ⛔ intentionally dropped (with why).
@@ -117,6 +117,6 @@ mechanism that delivers it.
 | Test Execution Management | 22 | 22 | 0 |
 | Platform/cross-cutting | — | identity, config, reporting re-homed | metering/billing, pipelines, credpools |
 
-**Conclusion:** the github-native design + `onetest-gh` MCP is **on par with OneTest's Test Case
+**Conclusion:** the github-native design + `onetest-tms` MCP is **on par with OneTest's Test Case
 and Test Execution Management** — every capability is delivered, with mechanism changes that are
 git-native wins (versioning, audit, approval, search) and only billing/out-of-scope items dropped.

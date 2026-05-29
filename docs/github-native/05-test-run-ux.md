@@ -11,7 +11,7 @@ already ships the agent team, the file formats, and the local run loop. The git-
 | Layer | Role | Status |
 | --- | --- | --- |
 | **Agent team** (`web-qa` bundle) | brains + UX — onboard, author, size, run, report | **ships today** (Claude agents + Playwright MCP) |
-| **npx stdio MCP** (`onetest-gh`) | deterministic engine + GitHub bridge — most processing in code | to build |
+| **npx stdio MCP** (`onetest-tms`) | deterministic engine + GitHub bridge — most processing in code | to build |
 | **GitHub** | system of record — Issues, Projects, Actions, files, Pages | native |
 
 Principle: **the agent is the brains, the MCP server (code) is the engine, GitHub is the truth.**
@@ -62,10 +62,10 @@ gains a `create_run` tool call that materializes Issues+Project; `test-reporter`
  You ──▶ test-run-lead (active agent)
             │  Agent tool (sub-agents)         MCP (stdio)
             ├─▶ test-author / test-sizer        ┌───────────────────────────┐
-            ├─▶ test-runner ──▶ Playwright MCP   │  onetest-gh  (npx stdio)  │
+            ├─▶ test-runner ──▶ Playwright MCP   │  onetest-tms  (npx stdio)  │
             └─▶ test-reporter ──────────────────▶│  • resolve OQL → scope    │
                                                  │  • create_run → Issues+Proj│──▶ GitHub
-            calls onetest-gh tools ─────────────▶│  • record_result          │   (Issues,
+            calls onetest-tms tools ─────────────▶│  • record_result          │   (Issues,
                                                  │  • correlate / coverage   │    Projects,
                                                  │  • publish_report → Pages │    Actions,
                                                  └───────────────────────────┘    files, Pages)
@@ -87,7 +87,7 @@ Actions (autonomous/CI) — logic written once in code. See
 It is the first of a **family of QA bundles** (mobile, accessibility, …) delivered as `web-qa`
 improvements — each adds its own domain MCP (Playwright for web, Appium/mobile for mobile,
 an a11y/axe MCP for accessibility) but **reuses `test-run-lead` orchestration and the same GitHub
-system-of-record + `onetest-gh` MCP unchanged**. The platform layer in these docs is
+system-of-record + `onetest-tms` MCP unchanged**. The platform layer in these docs is
 bundle-agnostic.
 
 ## The run lifecycle, mapped to GitHub
@@ -121,8 +121,8 @@ cheap, repeatable, and identical between chat and CI.
 Config (one file per host): `.mcp.json` (Claude Code) / `.vscode/mcp.json` (Copilot):
 ```jsonc
 { "mcpServers": {
-    "onetest-gh": { "type": "stdio", "command": "npx",
-      "args": ["-y", "onetest-gh-mcp"],
+    "onetest-tms": { "type": "stdio", "command": "npx",
+      "args": ["-y", "onetest-tms"],
       "env": { "GITHUB_TOKEN": "${OT_GH_APP_TOKEN}", "OT_TM_REPO": "org/tm-login" } } } }
 ```
 
@@ -202,7 +202,7 @@ Deltas to decide/keep:
 
 ## Resolved decisions
 
-1. **GitHub writes are direct.** The agents call the `onetest-gh` MCP tools directly —
+1. **GitHub writes are direct.** The agents call the `onetest-tms` MCP tools directly —
    `test-run-lead` calls `create_run` / `record_result` / `complete_run`, `test-reporter` calls
    `publish_report`. No file-watcher/sync layer; one orchestrator, the board is updated as the run
    happens (immediate truth).
@@ -212,5 +212,5 @@ Deltas to decide/keep:
    scheduling. The runner pool fills to the resource ceiling regardless of case size.
 3. **A family of QA bundles, one platform layer.** `web-qa` is first; mobile, accessibility, etc.
    ship as `web-qa` improvements. Each swaps in its **domain MCP** (Playwright / Appium / a11y) but
-   reuses `test-run-lead`, the `onetest-gh` MCP, and the GitHub system-of-record **unchanged**.
+   reuses `test-run-lead`, the `onetest-tms` MCP, and the GitHub system-of-record **unchanged**.
    Everything in these github-native docs is written to be bundle-agnostic.

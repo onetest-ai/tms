@@ -1,0 +1,32 @@
+{
+  "cases": [
+    {
+      "id": "TMS-0001",
+      "title": "Login with valid credentials",
+      "status": "ready",
+      "execution_type": "automated",
+      "type": "functional",
+      "priority": "critical",
+      "size": "M",
+      "module": "authentication",
+      "owner": "",
+      "tags": [
+        "smoke",
+        "login",
+        "happy-path"
+      ],
+      "requirements": [
+        "REQ-001"
+      ],
+      "automation_test_id": [
+        "tests/e2e/login.spec.ts:Login.valid"
+      ],
+      "targets": [
+        "onetest-ai/app-web"
+      ],
+      "dependencies": [],
+      "known_issues": [],
+      "path": "tests/authentication/login/TMS-0001_valid-login.md"
+    }
+  ]
+}

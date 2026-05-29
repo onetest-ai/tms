@@ -1,9 +1,9 @@
-# onetest-gh MCP server
+# onetest-tms MCP server
 
-Stdio MCP server that exposes the TMS [gh-CLI scripts](../scripts) as MCP tools, so
+Stdio MCP server that exposes the TMS [gh-CLI scripts](scripts) as MCP tools, so
 Claude Code / Copilot / VS Code agents (e.g. the `web-qa` `test-run-lead`) drive runs on GitHub.
 Thin adapter — all logic lives in `scripts/` (and their Python helpers). Implements the
-[`onetest-gh` spec](../docs/github-native/onetest-gh-mcp-spec.md).
+[`onetest-tms` spec](../docs/github-native/onetest-tms-spec.md).
 
 ## Tools
 
@@ -25,10 +25,10 @@ Requires `gh` authenticated (the tools shell out to `gh`) and Node ≥ 20.
 
 Claude Code (`.mcp.json`) / VS Code Copilot (`.vscode/mcp.json`):
 ```jsonc
-{ "mcpServers": { "onetest-gh": {
+{ "mcpServers": { "onetest-tms": {
   "type": "stdio",
   "command": "node",
-  "args": ["/absolute/path/to/tms/mcp/server.js"]
+  "args": ["/absolute/path/to/tms/onetest-tms/server.js"]
 } } }
 ```
-Once published to npm, this becomes `"command": "npx", "args": ["-y", "onetest-gh-mcp"]`.
+Once published to npm, this becomes `"command": "npx", "args": ["-y", "onetest-tms"]`.

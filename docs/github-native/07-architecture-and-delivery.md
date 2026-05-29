@@ -9,7 +9,7 @@ looser wording in earlier docs.
 | --- | --- | --- |
 | Is | the **TMS** | a **test executor** agent |
 | Owns | test cases, runs, executions, results, reports, coverage (on GitHub) | the capability to *actually run tests* (browser/Playwright, steps, evidence) |
-| Surface | MCP server (the [12 tools](onetest-gh-mcp-spec.md)) | an agent/skill bundle ([`sdlc-skills/web-qa`](https://github.com/arozumenko/sdlc-skills/tree/main/bundles/web-qa)) |
+| Surface | MCP server (the [12 tools](onetest-tms-spec.md)) | an agent/skill bundle ([`sdlc-skills/web-qa`](https://github.com/arozumenko/sdlc-skills/tree/main/bundles/web-qa)) |
 | Role | **provides TMS to the QA** | **consumes** the TMS |
 
 web-qa is **not** shipped by onetest-tms. web-qa is an independent agent that *connects to*
@@ -58,7 +58,7 @@ One MCP config in the QA engineer's environment (`.mcp.json` / `.vscode/mcp.json
 
 ```jsonc
 { "mcpServers": {
-  "onetest-tms": { "command": "npx", "args": ["-y", "onetest-gh-mcp"] },   // the TMS provider (local process)
+  "onetest-tms": { "command": "npx", "args": ["-y", "onetest-tms"] },   // the TMS provider (local process)
   "playwright":  { "command": "npx", "args": ["@playwright/mcp@latest"] }   // execution
 } }
 ```
@@ -66,9 +66,9 @@ One MCP config in the QA engineer's environment (`.mcp.json` / `.vscode/mcp.json
 `onetest-tms` tools (`create_run`, `get_test_case`, `record_result`, …) and `playwright` to run.
 
 ### Delivery channels for the onetest-tms server
-- **Published (target):** `npx -y onetest-gh-mcp` — published to npm from the server repo via a
+- **Published (target):** `npx -y onetest-tms` — published to npm from the server repo via a
   release Action. Zero clone; `npx` fetches the latest server; the `repo` arg pulls content.
-- **Interim (today):** `node <local-clone>/mcp/server.js` — runs from a checkout. Same local-process
+- **Interim (today):** `node <local-clone>/onetest-tms/server.js` — runs from a checkout. Same local-process
   model, just not yet published.
 
 Content (cases/results) always flows **through onetest-tms to GitHub**; the server never bundles a
@@ -80,14 +80,14 @@ product's data.
   **content-only** (`.onetest/` + `tests/`); they should *not* carry a copy of `mcp/`. (The template
   currently copies it — a cleanup: strip `mcp/`/`scripts/` from the template once the server is
   published, and have repos reference the published package.)
-- **Naming:** the provider is "onetest-tms"; it is currently implemented as the `onetest-gh` MCP
-  server / `onetest-gh-mcp` package. Rename to `onetest-tms` is optional and not yet done.
+- **Naming:** the provider is "onetest-tms"; it is currently implemented as the `onetest-tms` MCP
+  server / `onetest-tms` package. Rename to `onetest-tms` is optional and not yet done.
 
 ## Status
 
 | Component | State |
 | --- | --- |
-| onetest-tms server (local stdio, repo-parameterized) | built (`mcp/server.js` v0.2.0) |
+| onetest-tms server (local stdio, repo-parameterized) | built (`onetest-tms/server.js` v0.2.0) |
 | Delivery as local process | **decided: per-consumer `npx`/local, no backend** |
 | Publish to npm + release Action | not done (interim = local `node` path) |
 | Strip server out of the template (content-only product repos) | not done |

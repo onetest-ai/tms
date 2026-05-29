@@ -53,7 +53,7 @@ with files in a repository.
 - [03 — Automated Results → Actions + artifacts](github-native/03-automated-test-results.md)
 - [04 — Correlations & Reporting → functions + Pages + Insights](github-native/04-correlations-and-reporting.md)
 - [05 — Test Run UX (Copilot/Claude/VS Code agents + MCP)](github-native/05-test-run-ux.md)
-- [`onetest-gh` MCP tool spec (buildable contract)](github-native/onetest-gh-mcp-spec.md)
+- [`onetest-tms` MCP tool spec (buildable contract)](github-native/onetest-tms-spec.md)
 - [Parity with OneTest (TCM + Execution audit)](github-native/parity-with-onetest.md)
 - [Functions catalog (the Actions that replace the backend)](github-native/functions.md)
 
