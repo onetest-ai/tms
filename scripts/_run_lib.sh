@@ -24,14 +24,16 @@ ot_set_opt(){ [ -n "$3" ] && gh project item-edit --id "$1" --project-id "$OT_PI
 # Echoes: "<ID>|<TARGET#NUM>|<URL>"
 ot_create_execution(){
   local RUN_REPO="$1" RUN_NUM="$2" RUN_ID="$3" ENVIRONMENT="$4" f="$5" TARGET_OVERRIDE="$6" ASSIGNEE="$7" TC="$8"
-  local ID TITLE PRIORITY SIZE TARGETS TAGS TARGET SRC EB ER E_NUM E_ID E_URL IT
+  local CFG="$(dirname "$TC")/_cfg.py"
+  local ID TITLE PRIORITY SIZE TARGETS TAGS TARGET SRC EB ER E_NUM E_ID E_URL IT BASE_URL
   IFS=$'\t' read -r ID TITLE PRIORITY SIZE TARGETS TAGS < <(python3 "$TC" --tsv "$f")
   TARGET="${TARGET_OVERRIDE:-${TARGETS%%,*}}"; TARGET="${TARGET:-$RUN_REPO}"
   SRC="https://github.com/$RUN_REPO/blob/main/$f"
+  BASE_URL="$(python3 "$CFG" --env "$ENVIRONMENT" 2>/dev/null || true)"
   EB="$(mktemp)"
   { echo "**Test case:** [\`$ID\`]($SRC) · Priority: ${PRIORITY:-—} · Size: ${SIZE:-—}"
-    echo "**Run:** $RUN_ID · **Environment:** $ENVIRONMENT"; echo
-    echo "### Steps"; python3 "$TC" --steps "$f"; echo
+    echo "**Run:** $RUN_ID · **Environment:** $ENVIRONMENT${BASE_URL:+ ($BASE_URL)}"; echo
+    if [ -n "$BASE_URL" ]; then python3 "$TC" --exec-body "$f" --base-url "$BASE_URL"; else python3 "$TC" --exec-body "$f"; fi; echo
     echo "<!-- onetest:run=$RUN_ID case=$ID -->"; } > "$EB"
   local A=(-X POST "repos/$TARGET/issues" -f title="$ID — $TITLE" -F "body=@$EB" -f type="Test Execution"
            -f "labels[]=kind:execution" -f "labels[]=result:not-run" -f "labels[]=onetest")

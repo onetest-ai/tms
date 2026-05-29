@@ -22,7 +22,7 @@
 #   --dry-run            print the plan, create nothing
 set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
-TC="$HERE/_tc.py"
+TC="$HERE/_tc.py"; CFG="$HERE/_cfg.py"
 
 # ---- args -----------------------------------------------------------------
 NAME=""; FOLDER=""; GLOB=""; TAG=""; OQL=""; ENVIRONMENT="staging"; TARGET_OVERRIDE=""
@@ -118,10 +118,11 @@ for f in "${SELECTED[@]}"; do
   IFS=$'\t' read -r ID TITLE PRIORITY SIZE TARGETS TAGS < <(python3 "$TC" --tsv "$f")
   TARGET="${TARGET_OVERRIDE:-${TARGETS%%,*}}"; TARGET="${TARGET:-$RUN_REPO}"
   SRC="https://github.com/$RUN_REPO/blob/main/$f"
+  BASE_URL="$(python3 "$CFG" --env "$ENVIRONMENT" 2>/dev/null || true)"
   EB="$(mktemp)"
   { echo "**Test case:** [\`$ID\`]($SRC) · Priority: ${PRIORITY:-—} · Size: ${SIZE:-—}";
-    echo "**Run:** $RUN_ID · **Environment:** $ENVIRONMENT"; echo;
-    echo "### Steps"; python3 "$TC" --steps "$f"; echo;
+    echo "**Run:** $RUN_ID · **Environment:** $ENVIRONMENT${BASE_URL:+ ($BASE_URL)}"; echo;
+    if [ -n "$BASE_URL" ]; then python3 "$TC" --exec-body "$f" --base-url "$BASE_URL"; else python3 "$TC" --exec-body "$f"; fi; echo;
     echo "<!-- onetest:run=$RUN_ID case=$ID -->"; } > "$EB"
   declare -a A=(-X POST "repos/$TARGET/issues" -f title="$ID — $TITLE" -F "body=@$EB"
     -f type="Test Execution" -f "labels[]=kind:execution" -f "labels[]=result:not-run" -f "labels[]=onetest")
