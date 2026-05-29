@@ -14,10 +14,10 @@ id_format: "{source_key}-{seq:04d}"   # source-based identity; seq allocated per
 # Empty = execution Issues are created in THIS repo (centralized-QA mode).
 default_targets: []             # e.g. [onetest-ai/app-web, onetest-ai/app-api]
 
-# Org Project (run/quality board). number is set by scripts/bootstrap-project.sh.
+# Org Project (run/quality board). Created by scripts/bootstrap-project.sh.
 project:
   org: onetest-ai
-  number: null
+  number: 2                      # https://github.com/orgs/onetest-ai/projects/2 ("QA Runs")
 
 # Environments the runs target (run context).
 environments:

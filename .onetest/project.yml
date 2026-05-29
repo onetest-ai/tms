@@ -6,7 +6,7 @@ schema_version: 1
 project:
   org: onetest-ai
   title: "QA Runs"
-  # number filled in after creation → also write it back into .onetest/config.yml
+  number: 2                      # https://github.com/orgs/onetest-ai/projects/2
 
 # Single-select + text fields the create_run / record_result tools set.
 fields:

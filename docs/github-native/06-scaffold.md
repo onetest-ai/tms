@@ -56,6 +56,8 @@ The `.github/workflows/*` are **placeholders** that document intent and stay gre
 [`onetest-gh`](onetest-gh-mcp-spec.md) npx package ships; then each calls the real CLI.
 
 Already applied to `onetest-ai`: the org **Issue Types** (Test Run, Test Execution, Defect,
-Exploratory Finding) and the repo **labels** — so the issue forms set `type:` directly. Still
-pending (need extra scopes / the GitHub App): the org **Project** (`scripts/bootstrap-project.sh`,
-`project` scope) and the `OT_GH_APP_TOKEN` secret for cross-repo run creation.
+Exploratory Finding), the repo **labels**, and the org **Project** #2 "QA Runs"
+(https://github.com/orgs/onetest-ai/projects/2) with its field schema — so the issue forms set
+`type:` directly and `.onetest/config.yml` points at the board. Still pending: the
+`OT_GH_APP_TOKEN` secret for cross-repo run creation (or, while on the gh CLI, the local token is
+used).
