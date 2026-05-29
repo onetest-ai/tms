@@ -66,10 +66,10 @@ One MCP config in the QA engineer's environment (`.mcp.json` / `.vscode/mcp.json
 `onetest-tms` tools (`create_run`, `get_test_case`, `record_result`, …) and `playwright` to run.
 
 ### Delivery channels for the onetest-tms server
-- **Published (target):** `npx -y @onetest/tms` — published to npm from the server repo via a
+- **Published:** `npx -y @onetest/tms` — published to npm from the server repo via a
   release Action. Zero clone; `npx` fetches the latest server; the `repo` arg pulls content.
-- **Interim (today):** `node <local-clone>/onetest-tms/server.js` — runs from a checkout. Same local-process
-  model, just not yet published.
+- **Local development:** `node <local-clone>/onetest-tms/server.js` — runs from a checkout. Same local-process
+  model.
 
 Content (cases/results) always flows **through onetest-tms to GitHub**; the server never bundles a
 product's data.
@@ -89,6 +89,6 @@ product's data.
 | --- | --- |
 | onetest-tms server (local stdio, repo-parameterized) | built (`onetest-tms/server.js` v0.2.0) |
 | Delivery as local process | **decided: per-consumer `npx`/local, no backend** |
-| Publish to npm + release Action | not done (interim = local `node` path) |
+| Publish to npm | ✅ done — `@onetest/tms` (`npx -y @onetest/tms`) |
 | Strip server out of the template (content-only product repos) | not done |
 | web-qa consumer wiring to onetest-tms | works (separate bundle) |

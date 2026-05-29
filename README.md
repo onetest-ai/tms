@@ -29,7 +29,8 @@ In scope: **test case management, test execution management, automated test resu
 
 ## Status
 
-The TMS works today via the `onetest-tms` MCP/CLI: provision a repo, author cases, create runs,
-record results, ingest automated results, and report coverage — all backed by GitHub. Remaining
-packaging steps: publish `onetest-tms` to npm, and strip the engine out of generated product repos
+The TMS works today via the `onetest-tms` MCP/CLI — published to npm as
+[`@onetest/tms`](https://www.npmjs.com/package/@onetest/tms) (`npx -y @onetest/tms`): provision a
+repo, author cases, create runs, record results, ingest automated results, and report coverage —
+all backed by GitHub. Remaining packaging step: strip the engine out of generated product repos
 so they're content-only.

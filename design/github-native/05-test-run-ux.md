@@ -11,7 +11,7 @@ already ships the agent team, the file formats, and the local run loop. The git-
 | Layer | Role | Status |
 | --- | --- | --- |
 | **Agent team** (`web-qa` bundle) | brains + UX — onboard, author, size, run, report | **ships today** (Claude agents + Playwright MCP) |
-| **npx stdio MCP** (`onetest-tms`) | deterministic engine + GitHub bridge — most processing in code | to build |
+| **npx stdio MCP** (`@onetest/tms`) | engine + GitHub bridge; processing in code | ✅ published |
 | **GitHub** | system of record — Issues, Projects, Actions, files, Pages | native |
 
 Principle: **the agent is the brains, the MCP server (code) is the engine, GitHub is the truth.**
