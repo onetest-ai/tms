@@ -1,8 +1,19 @@
 # Obsidian-first vault: graph-connected, discoverable test cases
 
 **Date:** 2026-08-07
-**Status:** Approved (design) — pending implementation plan
-**Topic:** Make the `tests/` tree open as a complete, graph-connected Obsidian vault so every test case, its requirements, and its external resources are discoverable through Obsidian's graph and backlinks.
+**Status:** Approved (design), revised after corpus audit — pending implementation plan
+**Topic:** Make the `tests/` tree open as a complete, graph-connected Obsidian vault so every test case, its requirements, and its external resources are discoverable through Obsidian's graph and backlinks — and migrate/repair a real 2,789-case corpus into that shape.
+
+## Revision note (post-audit)
+
+The initial design assumed requirements were clean `REQ-001` tokens and put wikilinks in the case front-matter. Auditing the real corpus (`onetest-ai-tm-Elitea`, 2,789 cases) overturned two assumptions:
+
+- **Requirements are GitHub issue refs** (`OWNER/REPO#N`, e.g. `ProjectAlita/projectalita.github.io#3937`), which contain `/` and `#` and cannot be naive Obsidian wikilinks (`#` = heading anchor). ~1,700 cases carry them; ~1,100 are empty; a few are bare issue numbers.
+- **The corpus is a "hot mess":** 169 duplicate IDs across 376 files (genuinely different tests colliding on one ID), 33 files with a BOM/blank line before front-matter, and a `type` enum that uses values (`regression`, `integration`) absent from `.onetest/fields.yml`.
+
+Two decisions follow (user-approved):
+1. **Edge model flips to proxy→case.** Keep `requirements:` bare (OQL-safe, unchanged); the generated requirement **proxy note links back to its cases** (`[[<ID>]]`). Obsidian graph edges are undirected, so this yields the identical cluster with no wikilink-mangling and **no front-matter normalization**. Requirement URLs **derive** from the GitHub ref (`OWNER/REPO#N` → `https://github.com/OWNER/REPO/issues/N`).
+2. **One combined plan** delivers the vault feature (Part A) *and* the data-repair migration (Part B), including **reassigning fresh IDs** to the 207 non-canonical collision files.
 
 ## Problem
 
@@ -30,102 +41,110 @@ Vault root = `tests/`. Every node is a real `.md` file (graph + backlinks work).
 | Vault root MOC | `tests/_index.md` | no | generated |
 | Tag hubs | — native Obsidian tags from front-matter `tags:` | — | free |
 
-**Edges.**
-- Case → requirement: case front-matter `requirements: ["[[REQ-001]]"]` → clusters every covering case around the requirement proxy note.
-- Suite spine: each MOC lists its child cases (`[[TMS-…]]`) and child MOCs; root MOC lists top-level MOCs. Open any case → backlinks pane shows its module MOC + requirements, with zero edits to the case body.
-- Case → case (optional): `related: ["[[TMS-0002]]"]`.
+**Edges (proxy→case direction).**
+- Case ↔ requirement: the generated **requirement proxy note lists `[[<ID>]]`** for every covering case. The undirected Obsidian edge clusters all covering cases; the case's Backlinks pane shows its requirements. `requirements:` in the case stays **bare** (`OWNER/REPO#N`) — no wikilinks, no edits.
+- Suite spine: each MOC lists its child cases (`[[<ID>]]`) and child MOCs; root MOC lists top-level MOCs.
+- The **only wikilinks in the vault live in generated notes**; case files contain none. Case↔hub resolution works because every case carries `aliases: [<ID>]`.
 
 ## Case front-matter — additions
 
-Only front-matter changes; body sections, `{{base_url}}`, steps tables, etc. are untouched.
+Only additive front-matter; body sections, `{{base_url}}`, steps tables, and existing `requirements:` values are untouched. `requirements` stays exactly as the corpus has it (bare `OWNER/REPO#N`).
 
 ```yaml
-id: TMS-0001
-title: Login with valid credentials
-aliases: [TMS-0001]                 # NEW — clean inbound wikilinks from hubs
+id: ELITEA-1368
+title: "SQL Toolkit — execute_sql Runs With Valid Credentials"
+aliases: [ELITEA-1368]               # NEW — so generated hubs link the case as [[ELITEA-1368]]
 priority: critical
 type: functional
-module: authentication
+module: alita-sdk
 status: ready
-execution_type: automated
-size: M
-targets: [onetest-ai/app-web]
-automation_test_id:
-  - tests/e2e/login.spec.ts:Login.valid
-requirements:                        # CHANGED — block-list of wikilinks (was inline [REQ-001])
-  - "[[REQ-001]]"
-related:                             # NEW (optional) — case→case edges
-  - "[[TMS-0002]]"
-requirement_links:                   # NEW (optional) — "ID | URL", feeds requirement proxy notes
-  - "REQ-001 | https://jira.example.com/browse/REQ-001"
-automation_url:                      # NEW (optional) — clickable in Obsidian Properties panel
-  - "https://github.com/onetest-ai/app-web/blob/main/tests/e2e/login.spec.ts"
-doc_url:                             # NEW (optional) — arbitrary external docs, clickable
-  - "https://.../login-design"
-tags: [smoke, login, happy-path]     # unchanged — native Obsidian tags
+execution_type: manual
+tags: [feat/toolkits, int/sql, r-2.0.3]
+requirements: [EliteaAI/elitea_issues#4972]   # UNCHANGED — bare GitHub issue ref
+automation_pr: https://github.com/EliteaAI/elitea-testing-public/pull/1170  # already a clickable URL property
 ```
 
 **Field roles**
 
 | Field | New/changed | Graph? | Indexed for OQL? | Notes |
 | --- | --- | --- | --- | --- |
-| `aliases` | new | resolves inbound `[[ID]]` | no | `[<ID>]` inline array, plain strings — parser-safe. |
-| `requirements` | changed to `"[[REQ-NNN]]"` block-list | yes (edge) | yes (normalized) | Was `[REQ-001]`. `_index.py` strips `[[ ]]` when indexing. |
-| `related` | new | yes (edge) | no | Optional case→case links. |
-| `requirement_links` | new | no | no | `ID \| URL`; generator-only, feeds proxy notes; not indexed. |
-| `automation_url`, `doc_url` | new | no (clickable property) | no | Pure-URL block-lists; Obsidian renders them clickable. |
-| `targets`, `automation_test_id`, `tags` | unchanged | tags→tag pane | yes | As today. |
+| `aliases` | new (added by migration) | resolves inbound `[[<ID>]]` | no | `[<ID>]` inline array — parser-safe. |
+| `requirements` | **unchanged** (bare `OWNER/REPO#N`) | via proxy backlink | yes | No wikilinks in the case; proxy note links back. |
+| `automation_pr`, `automation_url`, `doc_url` | existing / optional | no (clickable property) | no | Pure-URL properties; Obsidian renders them clickable in the Properties panel. |
+| `targets`, `automation_test_id`, `tags` | unchanged | tags→tag pane (nested tags via `/` work) | yes | As today. |
+
+No `_index.py` normalization is needed, because no wikilinks enter the case front-matter.
 
 ## External resources
 
-Obsidian graphs only internal `[[wikilinks]]`; a pure-URL property is clickable but is not a graph node. External refs are therefore split by whether they should cluster the graph or merely be reachable.
+Obsidian graphs only internal `[[wikilinks]]`; a pure-URL property is clickable but is not a graph node. External refs are split by whether they should cluster the graph or merely be reachable.
 
-**Requirements — graph nodes + external link.** `requirements: ["[[REQ-001]]"]` gives the internal clustering edge. The generator builds `tests/_meta/requirements/REQ-001.md` and injects a clickable `url:` property + body link from the matching `requirement_links` entry. Path: case → `[[REQ-001]]` (clusters all covering cases) → proxy note → one click out to Jira/tracker.
-- URL source: **declared on the case** via `requirement_links` (`ID | URL`).
-- Conflict rule: if multiple cases declare the same REQ with different URLs, the generator uses the **first seen** and **logs a conflict warning** (accepted drift risk of on-the-case declaration).
-- A requirement with no `requirement_links` entry anywhere still gets a proxy note (bare hub, no `url`).
+**Requirements — graph nodes via proxy, external link derived.** The generator emits one proxy note per distinct requirement ref, `tests/_meta/requirements/<safe>.md`, where `<safe>` sanitizes `/` and `#` to `-` (e.g. `ProjectAlita-projectalita.github.io-3937.md`). Its front-matter carries `aliases: ["<original ref>"]` and a derived clickable `url:`; its body lists `[[<ID>]]` for every covering case. Path: open a case → Backlinks shows its requirement → proxy note → one click to the GitHub issue.
+- **URL derivation:** `OWNER/REPO#N` → `https://github.com/OWNER/REPO/issues/N`. A bare issue number (`#N` with no repo) uses `default_requirements_repo` from `.onetest/config.yml` if set, else the proxy note has no `url` (still a graph node). An optional `requirement_links` (`ref | url`) on a case overrides derivation for non-GitHub refs.
+- Empty `requirements: []` → no proxy, no edge (that case just isn't requirement-linked).
 
-**Automation / defects / targets / docs — reachable, not graphed.** Declared as pure-URL front-matter properties (`automation_url`, `doc_url`, …), rendered clickable in the case's Properties panel with no body edits and no one-off external graph nodes. `targets` (repos) and defects (GitHub issues) are already GitHub and URL-derivable, so the generator may render those clickable too. Arbitrary body links (`[text](https://…)`) remain allowed for anything ad hoc.
+**Automation / defects / targets / docs — reachable, not graphed.** Pure-URL properties (`automation_pr` already present on 146 cases; optional `automation_url`/`doc_url`) render clickable in the case's Properties panel — no body edits, no one-off external graph nodes. `targets` (repos) and defects (GitHub Issues) are URL-derivable. Arbitrary body links (`[text](https://…)`) remain allowed.
 
 ## Generator — `build-index` extension
 
-`_index.py` / `build-index.sh` gain a **vault-emit pass** that runs after `index.json` is written. It reads the (normalized) index and:
+`build-index.sh` runs a new `_vault.py` **vault-emit pass** after `index.json` is written. Reading the index (bare requirement refs) plus each case's front-matter:
 
-1. **Requirement proxy notes** `tests/_meta/requirements/REQ-NNN.md` — front-matter `aliases: [REQ-NNN]` + `url:` (from `requirement_links`, first-seen); body lists `[[TMS-…]]` of every covering case. One note per distinct requirement referenced anywhere.
-2. **MOC notes** `tests/<folder>/_index.md` (recursive) + root `tests/_index.md` — each lists child cases (`[[ID]] — title`) and child MOC links.
-3. **Idempotent & self-maintaining:** the `_meta/` and `_index.md` set is fully regenerated each run (stale generated files pruned). Refresh runs via the local `build-index.sh` (used by the MCP `build_index` tool). Note: `.github/workflows/build-index.yml` is currently a **stub** (echoes a TODO, does not run the script). Wiring that Action to actually run `build-index.sh` and commit the index + generated notes on every merge is part of this work (or a documented follow-up if the wider `onetest-gh` packaging is doing it); the vault does not auto-refresh in CI until then.
+1. **Requirement proxy notes** `tests/_meta/requirements/<safe>.md` — `aliases: ["<ref>"]` + derived `url:`; body lists `[[<ID>]]` of every covering case. One per distinct ref.
+2. **MOC notes** `tests/<folder>/_index.md` (recursive) + root `tests/_index.md` — each lists child cases (`[[<ID>]] — title`) and child MOC links.
+3. **Idempotent:** the `_meta/requirements/*` and `_index.md` set is fully regenerated each run (stale marker-bearing generated files pruned). Refresh runs via `build-index.sh` (the MCP `build_index` tool). `.github/workflows/build-index.yml` is currently a **stub**; wiring it to run the script and commit is a documented follow-up (out of scope for the graph itself).
 
-**Normalization (the one parser-touching change):** when `_index.py` reads a list value, strip surrounding `[[ ]]` from each item before storing. So `index.json` holds `requirements: ["REQ-001"]` (OQL `requirements CONTAINS "REQ-001"` keeps working) while the case file holds `"[[REQ-001]]"` for Obsidian. Applies to `requirements` and `related`. `requirement_links`, `automation_url`, `doc_url` are read only by the generator, not emitted to `index.json`.
+**Exclusion invariant:** generated notes **omit `id:`**, so `_index.case()` returns `None` for them — they never enter `index.json`, OQL, or coverage. They carry a `generated by onetest-tms build-index` marker so pruning only ever deletes generated files.
 
-**No external deps:** all new fields are block-lists of plain strings, which the existing hand-rolled `read_frontmatter` already parses (the `- "…"` branch). No nested YAML maps (the parser skips indented lines), so no PyYAML.
+**No external deps / no parser change:** the generator reads existing block-list/inline-array fields via `read_frontmatter`; requirement refs are consumed as-is. No nested YAML maps, no PyYAML, no normalization.
+
+## Part B — Migration & data repair (Elitea corpus)
+
+The target repo `onetest-ai-tm-Elitea` (2,789 cases) is migrated by a shipped `_migrate.py` / `migrate-vault.sh`. **Dry-run by default; `--apply` writes.** Steps:
+
+1. **BOM / leading-blank fix (33 files):** strip a UTF-8 BOM and any leading blank lines so `---` is line 1 (the parser requires it). Safe, mechanical.
+2. **Duplicate-ID reassignment (169 IDs / 376 files → 207 reassigned):** for each colliding ID, keep the **canonical** file (lexicographically smallest path — deterministic/reproducible) and assign the others fresh IDs from a sequence allocator starting at `max_seq + 1` (corpus max = `ELITEA-2615` → new IDs from `ELITEA-2616`, 4-digit zero-pad). Each reassigned file: rewrite `id:`, rename the file to the new `<ID>_<slug>.md`, and update the single internal `duplicate_of:` cross-ref if it points at a reassigned ID. Emit an old→new mapping report.
+3. **Add `aliases: [<ID>]`** to every case (idempotent; after dedup so aliases are unique). Runs only after the corpus is collision-free.
+4. **Enum reconcile (config, not per-file):** `.onetest/fields.yml` currently exposes `test_category: [functional, performance, security, accessibility, exploratory]`, but cases use a `type` field with values `functional, regression, smoke, integration, security, performance`. Resolve by defining a canonical **`type`** allow-list = union covering the corpus: `[functional, regression, smoke, integration, security, performance, accessibility, exploratory]`, keyed as `type` (the field cases actually use). **Open call — confirm at spec review.** No per-case edits (all corpus values fall inside the union).
+5. **Generate the vault:** run `build-index.sh` on the repo → proxy + MOC notes; verify zero duplicate IDs, OQL still resolves, and the Obsidian graph connects cases ↔ requirements ↔ suites.
+
+`automation_pr` is already a clickable URL property — left as-is (optionally documented as the automation link).
 
 ## Docs & skill
 
 - **New reference** `docs/reference/obsidian-vault.md` — vault layout, node types, wikilink/`aliases` convention, external-resource split, how the graph is generated and refreshed. Cross-linked from `test-case-format.md` and `tests/README.md`.
-- **Update** `docs/reference/test-case-format.md` — add `aliases`, `related`, `requirement_links`, `automation_url`/`doc_url`, and the wikilink form of `requirements`.
+- **Update** `docs/reference/test-case-format.md` — add `aliases` (and the optional `automation_url`/`doc_url` clickable properties); document that `requirements` stays bare and the requirement→case graph comes from generated proxy notes.
 - **Update** `tests/README.md` — note the vault view + generated hub notes.
-- **Skill** `skills/onetest-tms/SKILL.md` — instruct authoring agents to emit `aliases` + wikilink `requirements` (+ optional `related`/`requirement_links`); create the referenced-but-missing `skills/onetest-tms/references/test-case-format.md`.
+- **Skill** `skills/onetest-tms/SKILL.md` — instruct authoring agents to set `aliases: [<ID>]`, keep `requirements` as bare refs, and never hand-edit generated `_index.md`/`_meta/` notes; create the referenced-but-missing `skills/onetest-tms/references/test-case-format.md`.
 
 ## Testing
 
-- `_index.py` unit checks: wikilink normalization (`[[REQ-001]]` → `REQ-001`); requirement-proxy + MOC generation from a fixture tree; `id`-less generated notes excluded from `cases`; `requirement_links` conflict → first-seen + warning.
-- Regression: existing `--tsv` / `--steps` / `--exec-body` and `index.json` shape for scalar/inline-array/block-list front-matter unchanged.
-- Migrate the existing `TMS-0001_valid-login.md` to the new front-matter as the worked example; run `build-index`, open `tests/` in Obsidian, confirm the graph connects `TMS-0001 ↔ REQ-001` and the module MOC, and the requirement proxy links out to its URL.
+- **`_vault.py` unit checks:** requirement-ref sanitization (`ProjectAlita/projectalita.github.io#3937` → filename `ProjectAlita-projectalita.github.io-3937`) and GitHub URL derivation; proxy note links every covering case and carries `aliases`+`url`; recursive MOC generation; `id`-less generated notes excluded from `cases`; stale-note pruning keeps authored notes.
+- **`_migrate.py` unit checks:** BOM/leading-blank stripping; duplicate-ID detection; canonical selection (smallest path) + sequential reassignment from `max+1`; file rename + `id:` rewrite + `duplicate_of` fix; `aliases` insertion is idempotent; dry-run writes nothing.
+- **Regression:** existing `_index.py --tsv/--steps/--exec-body` and `index.json` shape unchanged (no normalization added); OQL over the migrated index still resolves `requirements CONTAINS "…"`.
+- **Corpus acceptance (manual):** run the full migration `--apply` on `onetest-ai-tm-Elitea`, then `build-index`; assert 0 duplicate IDs, all cases have `aliases`, requirement proxies + MOCs exist, and Obsidian graph connects cases ↔ requirements ↔ suites with clickable issue URLs.
 
 ## Out of scope
 
-- Rewriting OQL/`_tc.py` to parse wikilinks in place (Approach B).
-- Injecting a generated `## Traceability` body section into cases.
-- A central requirements registry (`.onetest/requirements.yml`) — URLs are declared on cases.
-- Bundling an `.obsidian/` config/theme; the vault works with default Obsidian settings.
+- Rewriting OQL/`_tc.py` to parse wikilinks in place.
+- Wikilinks inside case front-matter or a generated `## Traceability` body section.
+- `_index.py` normalization (not needed — no wikilinks in cases).
+- Bundling an `.obsidian/` config/theme (the Elitea repo already has one).
 - Graph nodes for one-off automation/defect/doc URLs.
+- Semantic de-duplication of *content*-duplicate cases; Part B only fixes ID *collisions* by renumbering.
 
 ## Affected files (for the plan)
 
-- `onetest-tms/scripts/_index.py` — normalization + vault-emit pass.
-- `onetest-tms/scripts/build-index.sh` — invoke/emit vault notes; usage text.
-- `onetest-tms/scripts/_tc.py` — verify block-list parsing of new fields (likely no change).
-- `.github/workflows/build-index.yml` — currently a stub; wire it to run `build-index.sh` and commit index + generated notes (or document as follow-up).
+**Part A — vault feature (generic):**
+- `onetest-tms/scripts/_vault.py` (new) — proxy + MOC generation, URL derivation, pruning, CLI.
+- `onetest-tms/scripts/build-index.sh` — invoke `_vault.py` after the index; `--commit` adds generated notes; usage text.
+- `onetest-tms/test/test_vault.py` (new).
 - `docs/reference/obsidian-vault.md` (new), `docs/reference/test-case-format.md`, `tests/README.md`.
 - `skills/onetest-tms/SKILL.md`, `skills/onetest-tms/references/test-case-format.md` (new).
-- `tests/authentication/login/TMS-0001_valid-login.md` — migrate as worked example.
+
+**Part B — migration/repair (Elitea corpus):**
+- `onetest-tms/scripts/_migrate.py` (new) — BOM fix, dedup/reassign, alias insertion; dry-run/`--apply`.
+- `onetest-tms/scripts/migrate-vault.sh` (new) — orchestrates `_migrate.py` then `build-index.sh`.
+- `onetest-tms/test/test_migrate.py` (new).
+- `.onetest/fields.yml` — canonical `type` allow-list (enum reconcile).
+- `.onetest/config.yml` — optional `default_requirements_repo` for bare issue numbers.
+- `.github/workflows/build-index.yml` — stub; wiring to run + commit is a documented follow-up.
