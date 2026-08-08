@@ -15,6 +15,11 @@ class FmFixTest(unittest.TestCase):
         self.assertEqual(_migrate.fix_fm(blank), clean)
         self.assertEqual(_migrate.fix_fm(clean), clean)
 
+    def test_body_only_no_frontmatter(self):
+        body = "# Title\nContent\n"
+        self.assertFalse(_migrate.needs_fm_fix(body))
+        self.assertEqual(_migrate.fix_fm(body), body)
+
 
 if __name__ == "__main__":
     unittest.main()
