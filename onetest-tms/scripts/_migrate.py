@@ -38,8 +38,23 @@ def scan(tests_dir):
             if not f.endswith(".md") or f == "README.md":
                 continue
             p = os.path.join(root, f)
-            fm, _b = read_frontmatter(p)
-            cid = fm.get("id")
+            with open(p, encoding="utf-8") as fh:
+                text = fh.read()
+            if needs_fm_fix(text):
+                # in-memory only — scan() must never write to disk
+                text = fix_fm(text)
+            lines = text.splitlines()
+            if not lines or lines[0].strip() != "---":
+                continue
+            end = next((i for i in range(1, len(lines)) if lines[i].strip() == "---"), None)
+            if end is None:
+                continue
+            cid = None
+            for ln in lines[1:end]:
+                m = re.match(r"^id:\s*(\S+)", ln)
+                if m:
+                    cid = m.group(1)
+                    break
             if not isinstance(cid, str) or not ID_RE.match(cid):
                 continue
             recs.append({"id": cid, "path": p, "seq": int(ID_RE.match(cid).group(2))})

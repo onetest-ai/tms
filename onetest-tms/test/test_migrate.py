@@ -61,6 +61,38 @@ class ReassignTest(unittest.TestCase):
         self.assertEqual(len(ids), len(set(ids)))
 
 
+class ScanBomCollisionTest(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.mkdtemp()
+        self.t = os.path.join(self.tmp, "tests")
+        os.makedirs(os.path.join(self.t, "a"))
+        os.makedirs(os.path.join(self.t, "b"))
+        with open(os.path.join(self.t, "a", "ELITEA-10_x.md"), "w") as f:
+            f.write("---\nid: ELITEA-10\ntitle: X\n---\n# x\n")
+        # non-canonical collider has a BOM before the front-matter fence
+        with open(os.path.join(self.t, "b", "ELITEA-10_y.md"), "w", encoding="utf-8") as f:
+            f.write("﻿---\nid: ELITEA-10\ntitle: Y\nduplicate_of: ELITEA-10\n---\n# y\n")
+
+    def tearDown(self):
+        shutil.rmtree(self.tmp)
+
+    def test_bom_collision_seen_in_dry_run_scan(self):
+        before = {}
+        for root, _, files in os.walk(self.t):
+            for fn in files:
+                p = os.path.join(root, fn)
+                with open(p, "rb") as f:
+                    before[p] = f.read()
+
+        plan = _migrate.plan_reassign(_migrate.scan(self.t))
+        self.assertEqual(len(plan), 1)
+
+        # scan() must be read-only: no file contents changed
+        for p, data in before.items():
+            with open(p, "rb") as f:
+                self.assertEqual(f.read(), data)
+
+
 class AliasTest(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.mkdtemp()
