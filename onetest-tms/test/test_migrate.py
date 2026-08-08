@@ -61,5 +61,28 @@ class ReassignTest(unittest.TestCase):
         self.assertEqual(len(ids), len(set(ids)))
 
 
+class AliasTest(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.mkdtemp()
+        self.t = os.path.join(self.tmp, "tests")
+        os.makedirs(self.t)
+        self.p = os.path.join(self.t, "ELITEA-10_x.md")
+        with open(self.p, "w") as f:
+            f.write("---\nid: ELITEA-10\ntitle: X\n---\n# x\n")
+
+    def tearDown(self):
+        shutil.rmtree(self.tmp)
+
+    def test_alias_inserted_once(self):
+        self.assertTrue(_migrate.add_alias(self.p))
+        with open(self.p) as f:
+            txt = f.read()
+        self.assertIn("aliases: [ELITEA-10]", txt)
+        self.assertLess(txt.index("id: ELITEA-10"), txt.index("aliases: [ELITEA-10]"))
+        self.assertFalse(_migrate.add_alias(self.p))  # idempotent
+        with open(self.p) as f:
+            self.assertEqual(f.read().count("aliases:"), 1)
+
+
 if __name__ == "__main__":
     unittest.main()

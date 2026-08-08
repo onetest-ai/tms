@@ -83,3 +83,70 @@ def apply_reassign(item):
         f.write(text)
     if os.path.normpath(item["new_path"]) != os.path.normpath(item["path"]):
         os.remove(item["path"])
+
+
+def add_alias(path):
+    with open(path, encoding="utf-8") as f:
+        lines = f.read().splitlines(keepends=True)
+    if not lines or lines[0].strip() != "---":
+        return False
+    end = next((i for i in range(1, len(lines)) if lines[i].strip() == "---"), None)
+    if end is None:
+        return False
+    fm = lines[1:end]
+    if any(re.match(r"^\s*aliases:", ln) for ln in fm):
+        return False
+    idx = next((i for i, ln in enumerate(fm) if re.match(r"^id:\s*(\S+)", ln)), None)
+    if idx is None:
+        return False
+    cid = re.match(r"^id:\s*(\S+)", fm[idx]).group(1)
+    fm.insert(idx + 1, f"aliases: [{cid}]\n")
+    new = lines[:1] + fm + lines[end:]
+    with open(path, "w", encoding="utf-8") as f:
+        f.write("".join(new))
+    return True
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--dir", default="tests")
+    ap.add_argument("--apply", action="store_true")
+    a = ap.parse_args()
+
+    # 1) FM fix
+    fm_fixes = []
+    for root, _, files in os.walk(a.dir):
+        for f in files:
+            if f.endswith(".md") and f != "README.md":
+                p = os.path.join(root, f)
+                with open(p, encoding="utf-8") as fh:
+                    t = fh.read()
+                if needs_fm_fix(t):
+                    fm_fixes.append(p)
+                    if a.apply:
+                        with open(p, "w", encoding="utf-8") as fh:
+                            fh.write(fix_fm(t))
+
+    # 2) reassign duplicate IDs
+    plan = plan_reassign(scan(a.dir))
+    if a.apply:
+        for it in plan:
+            apply_reassign(it)
+
+    # 3) aliases (after reassignment so IDs are unique)
+    alias_added = 0
+    for r in scan(a.dir):
+        if a.apply and add_alias(r["path"]):
+            alias_added += 1
+
+    mode = "APPLIED" if a.apply else "DRY-RUN"
+    print(f"[{mode}] fm-fix: {len(fm_fixes)} files")
+    print(f"[{mode}] reassign: {len(plan)} files (old->new):")
+    for it in plan:
+        print(f"    {it['old_id']} -> {it['new_id']}  {it['new_path']}")
+    print(f"[{mode}] aliases added: {alias_added}" if a.apply
+          else f"[{mode}] aliases: would add to cases missing one")
+
+
+if __name__ == "__main__":
+    main()
