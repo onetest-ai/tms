@@ -17,6 +17,14 @@ test_category:                  # OneTest test_category; web-qa folds this into 
   default: functional
   values: [functional, performance, security, accessibility, exploratory]
 
+# `type` is the field test cases actually carry (web-qa `type`). Canonical
+# allow-list = the union covering the corpus: web-qa's categories plus the
+# `security`/`performance`/`accessibility` values inherited from test_category.
+# The validate-test-case CI check reads this `type` list.
+type:
+  default: functional
+  values: [functional, regression, smoke, integration, security, performance, accessibility, exploratory]
+
 # Adopted priority scheme = the shipping web-qa one. This supersedes OneTest's
 # conflicting p0–p3 / p1–p4 / P0–P4. One scheme platform-wide.
 priority:
