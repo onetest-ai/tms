@@ -64,9 +64,11 @@ automated (CI/JUnit) results; or checking automation coverage.
 - **Evidence before PASS:** never record `PASS` without an `evidence` reference.
 - **Don't hand-edit** issue `Result`/labels — always go through `record_result` so the Project
   field and labels stay in sync.
-- **Authoring** test cases is done via a **pull request** of Markdown files to the TM repo, not
-  through an MCP tool. Follow [references/test-case-format.md](references/test-case-format.md) for the
-  exact front-matter fields, allowed values, body sections, and `{{base_url}}` rule.
+- **Authoring** test cases is done via a **pull request** of Markdown files, not an MCP tool.
+  Follow [references/test-case-format.md](references/test-case-format.md). The TM repo is an
+  **Obsidian vault**: set `aliases: [<ID>]` on every case and keep `requirements` as plain
+  refs (never wikilink them) — `build-index` generates the requirement proxy + `_index.md`
+  MOC hub notes that form the graph. Never hand-edit generated `_index.md` / `_meta/` notes.
 
 ## Setup & troubleshooting helpers
 These ship with the `onetest-tms` package (run via the CLI / `bash scripts/<name>`):
