@@ -6,7 +6,9 @@ Fixes: BOM/leading-blank before front-matter; reassigns duplicate IDs
 """
 import argparse, os, re, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from _tc import read_frontmatter  # noqa: E402
+
+# id line, tolerant of optional surrounding quotes: `id: ELITEA-1` or `id: "ELITEA-1"`
+_ID_LINE = re.compile(r'^id:\s*["\']?([^"\'\s]+)')
 
 
 def needs_fm_fix(text):
@@ -51,7 +53,7 @@ def scan(tests_dir):
                 continue
             cid = None
             for ln in lines[1:end]:
-                m = re.match(r"^id:\s*(\S+)", ln)
+                m = _ID_LINE.match(ln)
                 if m:
                     cid = m.group(1)
                     break
@@ -111,10 +113,10 @@ def add_alias(path):
     fm = lines[1:end]
     if any(re.match(r"^\s*aliases:", ln) for ln in fm):
         return False
-    idx = next((i for i, ln in enumerate(fm) if re.match(r"^id:\s*(\S+)", ln)), None)
+    idx = next((i for i, ln in enumerate(fm) if _ID_LINE.match(ln)), None)
     if idx is None:
         return False
-    cid = re.match(r"^id:\s*(\S+)", fm[idx]).group(1)
+    cid = _ID_LINE.match(fm[idx]).group(1)
     fm.insert(idx + 1, f"aliases: [{cid}]\n")
     new = lines[:1] + fm + lines[end:]
     with open(path, "w", encoding="utf-8") as f:
