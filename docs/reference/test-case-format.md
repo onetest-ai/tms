@@ -38,6 +38,10 @@ Front-matter is validated against [`.onetest/fields.yml`](configuration.md) and 
 | `requirements` | array(string) | no | — | Linked requirement IDs (e.g. `REQ-001`). |
 | `tags` | array(string) | no | — | Free-form labels for OQL filtering (e.g. `smoke`, `happy-path`). |
 | `custom_fields` | map | no | per `custom-fields.yml` | Project-defined fields. Empty unless `custom-fields.yml` declares any. |
+| `aliases` | array(string) | no | `[<ID>]` | Obsidian alias so generated hubs link the case as `[[<ID>]]`. Set to the case `id`. |
+| `automation_pr` / `automation_url` / `doc_url` | array/string | no | URLs | Clickable external links in Obsidian's Properties panel (not graph nodes). |
+
+> **Obsidian vault:** `requirements` stays a plain list of refs (e.g. `OWNER/REPO#N`) — do **not** wikilink it. The requirement↔case graph edge is generated as a proxy note that links back to covering cases. See [Obsidian vault](obsidian-vault.md).
 
 > The `failure_reason` allow-list (`bug_in_app`, `test_data_issue`, `environment_issue`, `test_needs_update`, `blocked_by_other`, `other`) is **not** a case field — it is recorded at execution time via `record_result`. See [MCP tools](mcp-tools.md).
 
