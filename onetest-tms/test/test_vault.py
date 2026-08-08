@@ -37,8 +37,10 @@ class RequirementProxyTest(unittest.TestCase):
         self.tests = os.path.join(self.tmp, "tests")
         d = os.path.join(self.tests, "alita-sdk")
         os.makedirs(d)
-        open(os.path.join(d, "ELITEA-1368_sql.md"), "w").write(CASE_A)
-        open(os.path.join(d, "ELITEA-1400_sql-err.md"), "w").write(CASE_B)
+        with open(os.path.join(d, "ELITEA-1368_sql.md"), "w") as f:
+            f.write(CASE_A)
+        with open(os.path.join(d, "ELITEA-1400_sql-err.md"), "w") as f:
+            f.write(CASE_B)
 
     def tearDown(self):
         shutil.rmtree(self.tmp)
@@ -60,7 +62,8 @@ class RequirementProxyTest(unittest.TestCase):
         _vault.write_requirements(self.tests, covers)
         p = os.path.join(self.tests, "_meta", "requirements",
                          "EliteaAI-elitea_issues-4972.md")
-        note = open(p).read()
+        with open(p) as f:
+            note = f.read()
         self.assertIn('aliases: ["EliteaAI/elitea_issues#4972"]', note)
         self.assertIn("url: https://github.com/EliteaAI/elitea_issues/issues/4972", note)
         self.assertIn("[[ELITEA-1368]]", note)
