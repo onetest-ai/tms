@@ -111,3 +111,47 @@ def write_mocs(tests_dir, cases):
             f.write(_moc_note(folder, data))
         written.append(os.path.normpath(p))
     return written
+
+
+def _has_mark(path):
+    try:
+        with open(path, encoding="utf-8") as f:
+            return GEN_MARK in f.read()
+    except OSError:
+        return False
+
+
+def _is_generated(name, path):
+    req_dir = os.sep + os.path.join("_meta", "requirements") + os.sep
+    return name == "_index.md" or req_dir in (os.sep + path + os.sep)
+
+
+def prune(tests_dir, keep):
+    keep = {os.path.normpath(p) for p in keep}
+    removed = []
+    for root, _, files in os.walk(tests_dir):
+        for f in files:
+            p = os.path.normpath(os.path.join(root, f))
+            if p in keep or not f.endswith(".md"):
+                continue
+            if _is_generated(f, p) and _has_mark(p):
+                os.remove(p)
+                removed.append(p)
+    return removed
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--dir", default="tests")
+    ap.add_argument("--index", default="index.json")
+    ap.add_argument("--default-repo", default=None)
+    a = ap.parse_args()
+    cases = load_cases(a.index)
+    reqs = write_requirements(a.dir, collect_requirements(cases), a.default_repo)
+    mocs = write_mocs(a.dir, cases)
+    prune(a.dir, reqs + mocs)
+    print(f"vault: {len(reqs)} requirement notes, {len(mocs)} MOC notes", file=sys.stderr)
+
+
+if __name__ == "__main__":
+    main()
