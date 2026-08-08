@@ -72,5 +72,32 @@ class RequirementProxyTest(unittest.TestCase):
         self.assertIsNone(_index.case(p))  # id-less → excluded
 
 
+class MocTest(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.mkdtemp()
+        self.tests = os.path.join(self.tmp, "tests")
+        d = os.path.join(self.tests, "alita-sdk", "jira")
+        os.makedirs(d)
+        with open(os.path.join(d, "ELITEA-1368_sql.md"), "w") as f:
+            f.write(CASE_A.replace("alita-sdk", "jira"))
+
+    def tearDown(self):
+        shutil.rmtree(self.tmp)
+
+    def test_moc_tree_and_links(self):
+        cases = index_cases(self.tests)
+        _vault.write_mocs(self.tests, cases)
+        with open(os.path.join(self.tests, "_index.md")) as f:
+            root = f.read()
+        self.assertIn("[[alita-sdk/_index|alita-sdk]]", root)
+        with open(os.path.join(self.tests, "alita-sdk", "_index.md")) as f:
+            mid = f.read()
+        self.assertIn("[[alita-sdk/jira/_index|jira]]", mid)
+        with open(os.path.join(self.tests, "alita-sdk", "jira", "_index.md")) as f:
+            leaf = f.read()
+        self.assertIn("[[ELITEA-1368]] — SQL Toolkit runs", leaf)
+        self.assertIsNone(_index.case(os.path.join(self.tests, "_index.md")))
+
+
 if __name__ == "__main__":
     unittest.main()

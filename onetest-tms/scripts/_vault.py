@@ -69,3 +69,45 @@ def write_requirements(tests_dir, covers, default_repo=None):
             f.write(_req_note(ref, covers[ref], derive_url(ref, default_repo)))
         written.append(os.path.normpath(p))
     return written
+
+
+def moc_tree(tests_dir, cases):
+    folders = {"": {"cases": [], "subdirs": set()}}
+    for c in cases:
+        rel = os.path.relpath(c["path"], tests_dir)
+        folder = os.path.dirname(rel)
+        parts = folder.split(os.sep) if folder else []
+        for i in range(len(parts) + 1):
+            folders.setdefault(os.sep.join(parts[:i]), {"cases": [], "subdirs": set()})
+        for i in range(len(parts)):
+            folders[os.sep.join(parts[:i])]["subdirs"].add(os.sep.join(parts[:i + 1]))
+        folders[folder]["cases"].append((c["id"], c.get("title", "")))
+    return folders
+
+
+def _moc_note(folder, data):
+    title = folder.split(os.sep)[-1] if folder else "Test Vault"
+    lines = ["---", "tags: [moc]", "---", "", f"# {title}", ""]
+    if data["subdirs"]:
+        lines.append("## Suites")
+        for child in sorted(data["subdirs"]):
+            lines.append(f"- [[{child}/_index|{child.split(os.sep)[-1]}]]")
+        lines.append("")
+    if data["cases"]:
+        lines.append("## Cases")
+        for cid, ttl in sorted(data["cases"]):
+            lines.append(f"- [[{cid}]] — {ttl}")
+        lines.append("")
+    lines += [f"<!-- {GEN_MARK} -->", ""]
+    return "\n".join(lines)
+
+
+def write_mocs(tests_dir, cases):
+    written = []
+    for folder, data in moc_tree(tests_dir, cases).items():
+        p = os.path.join(tests_dir, folder, "_index.md")
+        os.makedirs(os.path.dirname(p), exist_ok=True)
+        with open(p, "w", encoding="utf-8") as f:
+            f.write(_moc_note(folder, data))
+        written.append(os.path.normpath(p))
+    return written
