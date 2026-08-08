@@ -93,8 +93,9 @@ def plan_reassign(records):
 def apply_reassign(item):
     with open(item["path"], encoding="utf-8") as f:
         text = f.read()
-    text = re.sub(rf"(?m)^id:\s*{re.escape(item['old_id'])}\s*$", f"id: {item['new_id']}", text)
-    text = re.sub(rf"(?m)^duplicate_of:\s*{re.escape(item['old_id'])}\s*$",
+    text = re.sub(rf"(?m)^id:\s*[\"']?{re.escape(item['old_id'])}[\"']?\s*$",
+                  f"id: {item['new_id']}", text)
+    text = re.sub(rf"(?m)^duplicate_of:\s*[\"']?{re.escape(item['old_id'])}[\"']?\s*$",
                   f"duplicate_of: {item['new_id']}", text)
     with open(item["new_path"], "w", encoding="utf-8") as f:
         f.write(text)

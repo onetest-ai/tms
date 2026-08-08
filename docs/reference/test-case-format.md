@@ -28,7 +28,7 @@ Front-matter is validated against [`.onetest/fields.yml`](configuration.md) and 
 | `id` | string | yes | `<source_key>-NNNN` | Immutable case identifier. Never reused. |
 | `title` | string | yes | — | One-line case name. |
 | `priority` | enum | yes | `critical`, `high`, `medium`, `low` | Execution priority; maps to the Project **Priority** field and `priority:*` labels. |
-| `type` | enum | yes | `functional`, `regression`, `smoke`, `integration`, `exploratory` | Test category (web-qa `type`; OneTest `test_category`). |
+| `type` | enum | yes | `functional`, `regression`, `smoke`, `integration`, `security`, `performance`, `accessibility`, `exploratory` | Test category (web-qa `type`; OneTest `test_category`). |
 | `module` | string | yes | — | Functional area under test (e.g. `authentication`). |
 | `status` | enum | yes | `draft`, `ready`, `deprecated` | Lifecycle state. Default `draft`. |
 | `execution_type` | enum | yes | `manual`, `automated` | Whether the case is run manually or by an automated test. Drives automation coverage. Default `manual`. |

@@ -61,6 +61,38 @@ class ReassignTest(unittest.TestCase):
         self.assertEqual(len(ids), len(set(ids)))
 
 
+class ReassignQuotedIdTest(unittest.TestCase):
+    def setUp(self):
+        self.tmp = tempfile.mkdtemp()
+        self.t = os.path.join(self.tmp, "tests")
+        os.makedirs(os.path.join(self.t, "a"))
+        os.makedirs(os.path.join(self.t, "b"))
+        # ELITEA-10 collides across a/ and b/; b's id is quoted
+        with open(os.path.join(self.t, "a", "ELITEA-10_x.md"), "w") as f:
+            f.write("---\nid: ELITEA-10\ntitle: X\n---\n# x\n")
+        with open(os.path.join(self.t, "b", "ELITEA-10_y.md"), "w") as f:
+            f.write('---\nid: "ELITEA-10"\ntitle: Y\nduplicate_of: "ELITEA-10"\n---\n# y\n')
+
+    def tearDown(self):
+        shutil.rmtree(self.tmp)
+
+    def test_quoted_id_rewritten_unquoted(self):
+        recs = _migrate.scan(self.t)
+        plan = _migrate.plan_reassign(recs)
+        self.assertEqual(len(plan), 1)
+        item = plan[0]
+        self.assertEqual(item["new_id"], "ELITEA-0011")
+        _migrate.apply_reassign(item)
+        with open(item["new_path"]) as f:
+            new = f.read()
+        self.assertIn("id: ELITEA-0011", new)
+        self.assertIn("duplicate_of: ELITEA-0011", new)
+        self.assertNotIn('"ELITEA-10"', new)
+        # no duplicate ids remain after a fresh scan
+        ids = [r["id"] for r in _migrate.scan(self.t)]
+        self.assertEqual(len(ids), len(set(ids)))
+
+
 class ScanBomCollisionTest(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.mkdtemp()
