@@ -26,3 +26,11 @@ computed on demand rather than stored.
 dynamic: true
 oql: "tags CONTAINS 'regression' AND status = 'ready'"
 ```
+
+### Obsidian vault
+This folder opens as an Obsidian vault. `build-index` generates hub notes —
+`_meta/requirements/*.md` (link back to covering cases with a derived GitHub URL) and
+`_index.md` MOCs — all `id`-less, so tooling ignores them. Cases carry `aliases: [<ID>]`
+so those links resolve; `requirements` stays a plain ref list. See
+[docs/reference/obsidian-vault.md](../docs/reference/obsidian-vault.md). Never hand-edit
+generated notes.

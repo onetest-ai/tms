@@ -28,7 +28,7 @@ Front-matter is validated against [`.onetest/fields.yml`](configuration.md) and 
 | `id` | string | yes | `<source_key>-NNNN` | Immutable case identifier. Never reused. |
 | `title` | string | yes | — | One-line case name. |
 | `priority` | enum | yes | `critical`, `high`, `medium`, `low` | Execution priority; maps to the Project **Priority** field and `priority:*` labels. |
-| `type` | enum | yes | `functional`, `regression`, `smoke`, `integration`, `exploratory` | Test category (web-qa `type`; OneTest `test_category`). |
+| `type` | enum | yes | `functional`, `regression`, `smoke`, `integration`, `security`, `performance`, `accessibility`, `exploratory` | Test category (web-qa `type`; OneTest `test_category`). |
 | `module` | string | yes | — | Functional area under test (e.g. `authentication`). |
 | `status` | enum | yes | `draft`, `ready`, `deprecated` | Lifecycle state. Default `draft`. |
 | `execution_type` | enum | yes | `manual`, `automated` | Whether the case is run manually or by an automated test. Drives automation coverage. Default `manual`. |
@@ -38,6 +38,10 @@ Front-matter is validated against [`.onetest/fields.yml`](configuration.md) and 
 | `requirements` | array(string) | no | — | Linked requirement IDs (e.g. `REQ-001`). |
 | `tags` | array(string) | no | — | Free-form labels for OQL filtering (e.g. `smoke`, `happy-path`). |
 | `custom_fields` | map | no | per `custom-fields.yml` | Project-defined fields. Empty unless `custom-fields.yml` declares any. |
+| `aliases` | array(string) | no | `[<ID>]` | Obsidian alias so generated hubs link the case as `[[<ID>]]`. Set to the case `id`. |
+| `automation_pr` / `automation_url` / `doc_url` | array/string | no | URLs | Clickable external links in Obsidian's Properties panel (not graph nodes). |
+
+> **Obsidian vault:** `requirements` stays a plain list of refs (e.g. `OWNER/REPO#N`) — do **not** wikilink it. The requirement↔case graph edge is generated as a proxy note that links back to covering cases. See [Obsidian vault](obsidian-vault.md).
 
 > The `failure_reason` allow-list (`bug_in_app`, `test_data_issue`, `environment_issue`, `test_needs_update`, `blocked_by_other`, `other`) is **not** a case field — it is recorded at execution time via `record_result`. See [MCP tools](mcp-tools.md).
 

@@ -10,6 +10,7 @@ while [ $# -gt 0 ]; do case "$1" in
 esac; done
 python3 "$HERE/_index.py" --dir "$DIR" --out "$OUT"
 echo "✓ wrote $OUT"
+python3 "$HERE/_vault.py" --dir "$DIR" --index "$OUT"
 if [ "$COMMIT" -eq 1 ]; then
-  git add "$OUT" && git commit -q -m "index: rebuild" && git push -q origin HEAD && echo "✓ committed"
+  git add "$OUT" "$DIR" && git commit -q -m "index: rebuild + vault" && git push -q origin HEAD && echo "✓ committed"
 fi

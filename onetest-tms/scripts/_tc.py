@@ -11,7 +11,8 @@ import sys
 
 
 def read_frontmatter(path):
-    lines = open(path, encoding="utf-8").read().splitlines()
+    with open(path, encoding="utf-8") as fh:
+        lines = fh.read().splitlines()
     if not lines or lines[0].strip() != "---":
         return {}, lines
     end = next((i for i in range(1, len(lines)) if lines[i].strip() == "---"), None)
