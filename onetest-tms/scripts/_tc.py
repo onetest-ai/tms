@@ -9,6 +9,11 @@ Modes:
 """
 import sys
 
+# Windows stdout defaults to the system codepage (cp1252) and crashes on UTF-8
+# characters (≥ → □) common in test-case bodies. Force UTF-8 when printing.
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
+
 
 def read_frontmatter(path):
     with open(path, encoding="utf-8") as fh:

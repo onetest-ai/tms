@@ -14,7 +14,7 @@
 #   --no-close           leave the run issue open
 #   --force              complete even if executions are unresolved (Not run / In progress)
 set -euo pipefail
-HERE="$(cd "$(dirname "$0")" && pwd)"
+HERE="$(cd "$(dirname "$0")" && pwd)"; source "$HERE/_run_lib.sh"
 RUN=""; SUITE=""; ENVN=""; ORG="onetest-ai"; PN=""; NOCOMMIT=0; NOCLOSE=0; FORCE=0
 while [ $# -gt 0 ]; do case "$1" in
   --run) RUN="$2"; shift 2;; --suite) SUITE="$2"; shift 2;; --env) ENVN="$2"; shift 2;;
@@ -35,7 +35,9 @@ RUN_NUM="$(gh issue list --repo "$RUN_REPO" --label kind:run --state all --searc
 
 # ---- gather board items + guard for unresolved ----------------------------
 ITEMS="$(mktemp)"; gh project item-list "$PN" --owner "$ORG" --format json --limit 500 > "$ITEMS"
-UNRESOLVED="$(python3 -c "import json;d=json.load(open('$ITEMS'));print(sum(1 for i in d.get('items',[]) if i.get('run')=='$RUN' and i.get('case') and i.get('result') in (None,'','Not run','In progress')))")"
+UNRESOLVED="$(python3 -c "import json,sys
+d=json.load(open(sys.argv[1])); run=sys.argv[2]
+print(sum(1 for i in d.get('items',[]) if i.get('run')==run and i.get('case') and i.get('result') in (None,'','Not run','In progress')))" "$(winpath "$ITEMS")" "$RUN")"
 if [ "$UNRESOLVED" -gt 0 ] && [ "$FORCE" -eq 0 ]; then
   echo "$UNRESOLVED execution(s) still Not run / In progress. Use --force to complete anyway." >&2; exit 3
 fi

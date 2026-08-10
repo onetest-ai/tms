@@ -20,6 +20,7 @@
 #   --force                      allow PASS without evidence
 #   --project N / --org ORG
 set -euo pipefail
+HERE="$(cd "$(dirname "$0")" && pwd)"; source "$HERE/_run_lib.sh"
 EXEC=""; RESULT=""; FREASON=""; NOTES=""; EVIDENCE=""; DEFECT=""; JSON=""; FORCE=0
 ORG="onetest-ai"; PN=""
 while [ $# -gt 0 ]; do case "$1" in
@@ -32,7 +33,7 @@ while [ $# -gt 0 ]; do case "$1" in
 esac; done
 [ -n "$EXEC" ] || { echo "--execution OWNER/REPO#NUM is required" >&2; exit 2; }
 EREPO="${EXEC%%#*}"; ENUM="${EXEC##*#}"
-jget(){ python3 -c "import json,sys;d=json.load(open(sys.argv[1]));print(d.get(sys.argv[2],'') if d.get(sys.argv[2]) is not None else '')" "$1" "$2"; }
+# jget / winpath / ensure_label come from _run_lib.sh
 
 # ---- ingest runner JSON (flags win over JSON) -----------------------------
 if [ -n "$JSON" ]; then
@@ -41,7 +42,7 @@ if [ -n "$JSON" ]; then
   JS_SCREEN="$(jget "$JSON" screenshot)"; [ -n "$EVIDENCE" ] || EVIDENCE="$JS_SCREEN"
   JS_DETAILS="$(jget "$JSON" failure_reason)"; JS_NOTES="$(jget "$JSON" notes)"
   [ -n "$NOTES" ] || NOTES="$JS_NOTES"
-  JS_DUR="$(jget "$JSON" duration_seconds)"; JS_CONSOLE="$(python3 -c "import json;print('; '.join(json.load(open('$JSON')).get('console_errors',[])))")"
+  JS_DUR="$(jget "$JSON" duration_seconds)"; JS_CONSOLE="$(python3 -c "import json,sys;print('; '.join(json.load(open(sys.argv[1])).get('console_errors',[])))" "$(winpath "$JSON")")"
   JS_STEPS="$(jget "$JSON" steps_completed)/$(jget "$JSON" steps_total)"
 fi
 [ -n "$RESULT" ] || { echo "--result (or --json) is required" >&2; exit 2; }
@@ -69,10 +70,10 @@ esac; }
 [ -n "$PN" ] || PN="$(gh project list --owner "$ORG" --format json -q '.projects[] | select(.title=="QA Runs") | .number' | head -1)"
 PID="$(gh project view "$PN" --owner "$ORG" --format json -q .id)"
 FL="$(mktemp)"; gh project field-list "$PN" --owner "$ORG" --format json > "$FL"
-fid(){ python3 -c "import json;print(next((f['id'] for f in json.load(open('$FL'))['fields'] if f.get('name')==__import__('sys').argv[1]),''))" "$1"; }
+fid(){ python3 -c "import json,sys;print(next((f['id'] for f in json.load(open(sys.argv[1]))['fields'] if f.get('name')==sys.argv[2]),''))" "$(winpath "$FL")" "$1"; }
 opt(){ python3 -c "import json,sys
-f=next((f for f in json.load(open('$FL'))['fields'] if f.get('name')==sys.argv[1]),{})
-print(next((o['id'] for o in f.get('options',[]) if o['name']==sys.argv[2]),''))" "$1" "$2"; }
+f=next((f for f in json.load(open(sys.argv[1]))['fields'] if f.get('name')==sys.argv[2]),{})
+print(next((o['id'] for o in f.get('options',[]) if o['name']==sys.argv[3]),''))" "$(winpath "$FL")" "$1" "$2"; }
 EURL="https://github.com/$EREPO/issues/$ENUM"
 ITEM="$(gh project item-list "$PN" --owner "$ORG" --format json -q ".items[] | select(.content.url==\"$EURL\") | .id" | head -1)"
 [ -n "$ITEM" ] || { echo "execution not found on board: $EURL" >&2; exit 1; }
@@ -88,11 +89,13 @@ fi
 gh issue edit "$ENUM" --repo "$EREPO" \
   --remove-label result:not-run --remove-label result:passed --remove-label result:failed \
   --remove-label result:blocked --remove-label result:skipped >/dev/null 2>&1 || true
+ensure_label "$EREPO" "$LABEL"
 gh issue edit "$ENUM" --repo "$EREPO" --add-label "$LABEL" >/dev/null
 if [ "$OPT" = "Failed" ] && [ -n "$(fr_label "$FREASON")" ]; then
+  ensure_label "$EREPO" "$(fr_label "$FREASON")"
   gh issue edit "$ENUM" --repo "$EREPO" --add-label "$(fr_label "$FREASON")" >/dev/null || true
 fi
-[ -n "$DEFECT" ] && gh issue edit "$ENUM" --repo "$EREPO" --add-label defect-linked >/dev/null || true
+[ -n "$DEFECT" ] && { ensure_label "$EREPO" defect-linked; gh issue edit "$ENUM" --repo "$EREPO" --add-label defect-linked >/dev/null; } || true
 
 # ---- comment --------------------------------------------------------------
 CB="$(mktemp)"
