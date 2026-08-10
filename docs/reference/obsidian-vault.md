@@ -4,7 +4,7 @@ A `tests/` tree opens directly as an Obsidian vault. Cases keep machine-readable
 front-matter; `build-index` generates hub notes so the Graph and Backlinks views
 connect every case to its requirements and suites.
 
-See also: [Test-case format](test-case-format.md) · [Configuration](configuration.md).
+See also: [Using the Obsidian vault](../guides/using-the-obsidian-vault.md) · [Migrating a corpus](../guides/migrating-a-corpus.md) · [Test-case format](test-case-format.md) · [Configuration](configuration.md).
 
 ## Node types
 

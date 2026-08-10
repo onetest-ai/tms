@@ -20,6 +20,8 @@ New here? Start with the [Introduction](getting-started/introduction.md), then t
 - [Automated results](guides/automated-results.md) — bring CI/JUnit results in and link them to cases
 - [Reports & coverage](guides/reports-and-coverage.md) — run reports, the board, automation coverage
 - [Searching with OQL](guides/searching-with-oql.md) — find tests in plain language or OQL
+- [Using the Obsidian vault](guides/using-the-obsidian-vault.md) — browse coverage as a graph
+- [Migrating a corpus](guides/migrating-a-corpus.md) — repair an existing repo into the vault shape
 
 ## Reference
 - [Test-case format](reference/test-case-format.md) — front-matter fields, body sections, allowed values
