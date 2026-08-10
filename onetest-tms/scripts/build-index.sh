@@ -2,6 +2,7 @@
 # build-index — scan tests/ front-matter into index.json (backs oql-search & coverage).
 # Usage: scripts/build-index.sh [--dir tests] [--out index.json] [--commit]
 set -euo pipefail
+export PYTHONIOENCODING="${PYTHONIOENCODING:-utf-8}"   # Windows: keep Python stdout UTF-8
 HERE="$(cd "$(dirname "$0")" && pwd)"
 DIR="tests"; OUT="index.json"; COMMIT=0
 while [ $# -gt 0 ]; do case "$1" in

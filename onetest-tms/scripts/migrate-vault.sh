@@ -2,6 +2,7 @@
 # migrate-vault — repair a corpus for the Obsidian vault, then build the vault.
 # Usage: migrate-vault.sh --dir tests [--apply] [--default-repo OWNER/REPO]
 set -euo pipefail
+export PYTHONIOENCODING="${PYTHONIOENCODING:-utf-8}"   # Windows: keep Python stdout UTF-8
 HERE="$(cd "$(dirname "$0")" && pwd)"
 DIR="tests"; APPLY=""; REPO=""
 while [ $# -gt 0 ]; do case "$1" in

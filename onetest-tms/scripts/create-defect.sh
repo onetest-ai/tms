@@ -20,8 +20,11 @@ DB="$(mktemp)"
   if [ -n "$EVIDENCE" ]; then echo "**Evidence:**"; IFS=',' read -ra EV <<<"$EVIDENCE"; for e in "${EV[@]}"; do echo "- $e"; done; fi
 } > "$DB"
 DR="$(mktemp)"
-gh api -X POST "repos/$TARGET/issues" -f title="$TITLE" -F "body=@$DB" \
-  -f type="Defect" -f "labels[]=kind:defect" -f "labels[]=onetest" > "$DR"
+ensure_label "$TARGET" onetest; ensure_label "$TARGET" kind:defect "d73a4a"
+declare -a DA=(-X POST "repos/$TARGET/issues" -f title="$TITLE" -F "body=@$(winpath "$DB")")
+ot_has_type "${TARGET%%/*}" "Defect" && DA+=(-f type="Defect")
+DA+=(-f "labels[]=kind:defect" -f "labels[]=onetest")
+gh api "${DA[@]}" > "$DR"
 D_NUM=$(jget "$DR" number); D_URL=$(jget "$DR" html_url)
 echo "✓ defect: $TARGET#$D_NUM ($D_URL)"
 

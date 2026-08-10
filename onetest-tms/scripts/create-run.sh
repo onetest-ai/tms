@@ -21,7 +21,7 @@
 #   --org ORG            org (default: onetest-ai)
 #   --dry-run            print the plan, create nothing
 set -euo pipefail
-HERE="$(cd "$(dirname "$0")" && pwd)"
+HERE="$(cd "$(dirname "$0")" && pwd)"; source "$HERE/_run_lib.sh"
 TC="$HERE/_tc.py"; CFG="$HERE/_cfg.py"
 
 # ---- args -----------------------------------------------------------------
@@ -45,7 +45,7 @@ esac; done
 [ -n "$NAME" ] || { echo "--name is required" >&2; exit 2; }
 
 RUN_REPO="$(gh repo view --json nameWithOwner -q .nameWithOwner)"
-jget(){ python3 -c "import json,sys;print(json.load(open(sys.argv[1])).get(sys.argv[2],''))" "$1" "$2"; }
+# jget / winpath / ensure_label / ot_has_type come from _run_lib.sh
 
 # ---- resolve scope --------------------------------------------------------
 declare -a CAND=()
@@ -93,10 +93,10 @@ done
 [ -n "$PROJECT_NUMBER" ] || { echo "QA Runs project not found; run scripts/bootstrap-project.sh" >&2; exit 1; }
 PROJECT_ID="$(gh project view "$PROJECT_NUMBER" --owner "$ORG" --format json -q .id)"
 FL="$(mktemp)"; gh project field-list "$PROJECT_NUMBER" --owner "$ORG" --format json > "$FL"
-fid(){ python3 -c "import json,sys;print(next((f['id'] for f in json.load(open('$FL'))['fields'] if f.get('name')==sys.argv[1]),''))" "$1"; }
+fid(){ python3 -c "import json,sys;print(next((f['id'] for f in json.load(open(sys.argv[1]))['fields'] if f.get('name')==sys.argv[2]),''))" "$(winpath "$FL")" "$1"; }
 opt(){ python3 -c "import json,sys
-f=next((f for f in json.load(open('$FL'))['fields'] if f.get('name')==sys.argv[1]),{})
-print(next((o['id'] for o in f.get('options',[]) if o['name']==sys.argv[2]),''))" "$1" "$2"; }
+f=next((f for f in json.load(open(sys.argv[1]))['fields'] if f.get('name')==sys.argv[2]),{})
+print(next((o['id'] for o in f.get('options',[]) if o['name']==sys.argv[3]),''))" "$(winpath "$FL")" "$1" "$2"; }
 F_RESULT=$(fid Result); O_NOTRUN=$(opt Result "Not run")
 F_RUN=$(fid Run); F_CASE=$(fid Case); F_PRIO=$(fid Priority); F_SIZE=$(fid Size)
 set_text(){ gh project item-edit --id "$1" --project-id "$PROJECT_ID" --field-id "$2" --text "$3" >/dev/null; }
@@ -108,8 +108,11 @@ RUNBODY="$(mktemp)"
 { echo "**Run:** $RUN_ID"; echo "**Environment:** $ENVIRONMENT"; echo "**Scope:** ${#SELECTED[@]} cases"; echo;
   echo "## Executions"; } > "$RUNBODY"
 RESP="$(mktemp)"
-gh api -X POST "repos/$RUN_REPO/issues" -f title="$RUN_ID — $NAME" -F "body=@$RUNBODY" \
-  -f type="Test Run" -f "labels[]=kind:run" -f "labels[]=run:in-progress" -f "labels[]=onetest" > "$RESP"
+ensure_label "$RUN_REPO" onetest; ensure_label "$RUN_REPO" kind:run; ensure_label "$RUN_REPO" run:in-progress "0075ca"
+declare -a RA=(-X POST "repos/$RUN_REPO/issues" -f title="$RUN_ID — $NAME" -F "body=@$(winpath "$RUNBODY")")
+ot_has_type "${RUN_REPO%%/*}" "Test Run" && RA+=(-f type="Test Run")
+RA+=(-f "labels[]=kind:run" -f "labels[]=run:in-progress" -f "labels[]=onetest")
+gh api "${RA[@]}" > "$RESP"
 RUN_NUM=$(jget "$RESP" number); RUN_URL=$(jget "$RESP" html_url)
 RUN_ITEM=$(add_item "$RUN_URL"); set_text "$RUN_ITEM" "$F_RUN" "$RUN_ID"
 echo "✓ run issue: $RUN_URL"
@@ -127,8 +130,11 @@ for f in "${SELECTED[@]}"; do
     echo "**Run:** $RUN_ID · **Environment:** $ENVIRONMENT${BASE_URL:+ ($BASE_URL)}"; echo;
     if [ -n "$BASE_URL" ]; then python3 "$TC" --exec-body "$f" --base-url "$BASE_URL"; else python3 "$TC" --exec-body "$f"; fi; echo;
     echo "<!-- onetest:run=$RUN_ID case=$ID -->"; } > "$EB"
-  declare -a A=(-X POST "repos/$TARGET/issues" -f title="$ID — $TITLE" -F "body=@$EB"
-    -f type="Test Execution" -f "labels[]=kind:execution" -f "labels[]=result:not-run" -f "labels[]=onetest")
+  ensure_label "$TARGET" onetest; ensure_label "$TARGET" kind:execution; ensure_label "$TARGET" result:not-run
+  [ -n "$PRIORITY" ] && ensure_label "$TARGET" "priority:$PRIORITY"
+  declare -a A=(-X POST "repos/$TARGET/issues" -f title="$ID — $TITLE" -F "body=@$(winpath "$EB")")
+  ot_has_type "${TARGET%%/*}" "Test Execution" && A+=(-f type="Test Execution")
+  A+=(-f "labels[]=kind:execution" -f "labels[]=result:not-run" -f "labels[]=onetest")
   [ -n "$PRIORITY" ] && A+=(-f "labels[]=priority:$PRIORITY")
   if [ ${#AS[@]} -gt 0 ]; then A+=(-f "assignees[]=${AS[$((i % ${#AS[@]}))]}"); fi
   ER="$(mktemp)"; gh api "${A[@]}" > "$ER"

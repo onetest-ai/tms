@@ -16,18 +16,21 @@ RUN_REPO="$(gh repo view --json nameWithOwner -q .nameWithOwner)"
 # original issue: title, body (for marker), labels (priority)
 O="$(mktemp)"; gh issue view "$ENUM" --repo "$EREPO" --json title,body,labels > "$O"
 TITLE="$(jget "$O" title)"
-BODY="$(python3 -c "import json;print(json.load(open('$O')).get('body') or '')")"
+BODY="$(jget "$O" body)"
 RUN_ID="$(printf '%s' "$BODY" | sed -n 's/.*onetest:run=\([^ ]*\).*/\1/p' | head -1)"
 CASE_ID="$(printf '%s' "$BODY" | sed -n 's/.*case=\([^ ]*\).*-->.*/\1/p' | head -1)"
-PRIORITY="$(python3 -c "import json;print(next((l['name'].split(':')[1] for l in json.load(open('$O'))['labels'] if l['name'].startswith('priority:')),''))")"
+PRIORITY="$(python3 -c "import json,sys;print(next((l['name'].split(':')[1] for l in json.load(open(sys.argv[1]))['labels'] if l['name'].startswith('priority:')),''))" "$(winpath "$O")")"
 [ -n "$RUN_ID" ] || { echo "could not read run id from $EXEC body marker" >&2; exit 1; }
 
 # new execution issue (re-run)
 NB="$(mktemp)"
 { echo "**Re-run of** $EXEC — reason: ${REASON:-n/a}"; echo;
   printf '%s\n' "$BODY"; } > "$NB"
-A=(-X POST "repos/$EREPO/issues" -f title="$TITLE (re-run)" -F "body=@$NB" -f type="Test Execution"
-   -f "labels[]=kind:execution" -f "labels[]=result:not-run" -f "labels[]=onetest")
+ensure_label "$EREPO" onetest; ensure_label "$EREPO" kind:execution; ensure_label "$EREPO" result:not-run
+[ -n "$PRIORITY" ] && ensure_label "$EREPO" "priority:$PRIORITY"
+A=(-X POST "repos/$EREPO/issues" -f title="$TITLE (re-run)" -F "body=@$(winpath "$NB")")
+ot_has_type "${EREPO%%/*}" "Test Execution" && A+=(-f type="Test Execution")
+A+=(-f "labels[]=kind:execution" -f "labels[]=result:not-run" -f "labels[]=onetest")
 [ -n "$PRIORITY" ] && A+=(-f "labels[]=priority:$PRIORITY")
 NR="$(mktemp)"; gh api "${A[@]}" > "$NR"
 N_NUM=$(jget "$NR" number); N_ID=$(jget "$NR" id); N_URL=$(jget "$NR" html_url)

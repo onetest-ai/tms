@@ -2,6 +2,7 @@
 # oql-search — run an OQL query over index.json (builds the index if missing).
 # Usage: scripts/oql-search.sh "tags CONTAINS 'smoke' AND priority IN (critical, high)" [--ids|--json] [--rebuild]
 set -euo pipefail
+export PYTHONIOENCODING="${PYTHONIOENCODING:-utf-8}"   # Windows: keep Python stdout UTF-8
 HERE="$(cd "$(dirname "$0")" && pwd)"
 QUERY=""; MODE=""; REBUILD=0
 while [ $# -gt 0 ]; do case "$1" in

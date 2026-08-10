@@ -2,6 +2,7 @@
 # automation-coverage — compute coverage from index.json (+ reports/correlation.json).
 # Usage: scripts/automation-coverage.sh [--commit]
 set -euo pipefail
+export PYTHONIOENCODING="${PYTHONIOENCODING:-utf-8}"   # Windows: keep Python stdout UTF-8
 HERE="$(cd "$(dirname "$0")" && pwd)"
 OUT="reports/coverage.md"; COMMIT=0
 while [ $# -gt 0 ]; do case "$1" in

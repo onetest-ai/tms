@@ -2,6 +2,7 @@
 # ingest-results — parse a JUnit XML report into reports/automated/<name>.json.
 # Usage: scripts/ingest-results.sh --file results.xml [--out reports/automated/NAME.json] [--commit]
 set -euo pipefail
+export PYTHONIOENCODING="${PYTHONIOENCODING:-utf-8}"   # Windows: keep Python stdout UTF-8
 HERE="$(cd "$(dirname "$0")" && pwd)"
 FILE=""; OUT=""; COMMIT=0
 while [ $# -gt 0 ]; do case "$1" in

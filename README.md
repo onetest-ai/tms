@@ -39,6 +39,15 @@ it (your laptop, or a CI runner) needs these on `PATH`:
 macOS/Linux `bash` + `python3` are usually present; otherwise install them (e.g. Homebrew). Run
 `onetest-tms doctor` (or `bash onetest-tms/scripts/doctor.sh`) to check everything at once.
 
+### Windows
+
+The engine is Bash + Python — there are no `.bat`/PowerShell scripts. On Windows, run everything
+from **Git Bash** (bundled with [Git for Windows](https://gitforwindows.org/), which you already
+need for `git`), not `cmd` or PowerShell. Install a **native Windows `python3`** (from
+[python.org](https://www.python.org/) or the Store) and make sure it's on `PATH` inside Git Bash.
+That combination is supported; `gh`, `git`, `bash`, and `python3` must all resolve on the Git Bash
+`PATH` (`onetest-tms doctor` verifies this).
+
 ## Scope
 
 In scope: **test case management, test execution management, automated test results, correlations

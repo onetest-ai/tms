@@ -2,6 +2,7 @@
 # correlate-results — match automated code_ref ⇄ test-case automation_test_id.
 # Usage: scripts/correlate-results.sh --automated reports/automated/NAME.json [--commit]
 set -euo pipefail
+export PYTHONIOENCODING="${PYTHONIOENCODING:-utf-8}"   # Windows: keep Python stdout UTF-8
 HERE="$(cd "$(dirname "$0")" && pwd)"
 AUTO=""; OUT="reports/correlation.json"; COMMIT=0
 while [ $# -gt 0 ]; do case "$1" in
